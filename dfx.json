@@ -1,0 +1,50 @@
+{
+  "canisters": {
+    "internet_identity": {
+      "type": "custom",
+      "shrink": false,
+      "candid": "https://github.com/dfinity/internet-identity/releases/download/release-2023-09-08/internet_identity.did",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/download/release-2023-09-08/internet_identity_dev.wasm.gz"
+    },
+    "ledger_canister": {
+      "type": "custom",
+      "candid": "https://raw.githubusercontent.com/dfinity/ic/ca5e5052886de781021506814d2c6502e375da48/rs/rosetta-api/icp_ledger/ledger.did",
+      "wasm": "https://download.dfinity.systems/ic/ca5e5052886de781021506814d2c6502e375da48/canisters/ledger-canister.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        }
+      }
+    },
+    "event_manager_js_backend": {
+      "type": "custom",
+      "main": "src/event_manager_js_backend/src/index.ts",
+      "candid": "src/event_manager_js_backend/src/index.did",
+      "build": "npx azle event_manager_js_backend",
+      "wasm": ".azle/event_manager_js_backend/event_manager_js_backend.wasm",
+      "gzip": true
+    },
+    "dfinity_js_frontend": {
+      "dependencies": [
+        "event_manager_js_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/event_manager_js_frontend/src/index.html"
+      },
+      "source": [
+        "src/event_manager_js_frontend/src/assets",
+        "dist/event_manager_js_frontend/"
+      ],
+      "type": "assets",
+      "gzip": true
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
