@@ -19,24 +19,26 @@ const Events = () => {
   const getEvents = useCallback(async () => {
     try {
       setLoading(true);
-      setEvents(await getEventList());
+      console.log(await getEventList(), "events")
+      // setEvents(await getEventList());
     } catch (error) {
       console.log({ error });
     } finally {
       setLoading(false);
     }
-  });
+  }, []);
 
   const getMyTickets = useCallback(async () => {
     try {
       setLoading(true);
-      setTickets(await getAttendeeTickets());
+      console.log(await getAttendeeTickets(), "tickets")
+      // setTickets(await getAttendeeTickets());
     } catch (error) {
       console.log({ error });
     } finally {
       setLoading(false);
     }
-  });
+  }, []);
 
   //  function to initiate transaction
   const buyTicket = async (id, tid) => {
@@ -84,7 +86,7 @@ const Events = () => {
         <>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="fs-4 fw-bold mb-0">Get Ticket For Your Entertaiment</h1>
-            <ManagedEvents />
+            {/* <ManagedEvents /> */}
           </div>
           <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
             {events.map((_event) => (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 import AddEvent from "./AddEvent";
@@ -25,14 +25,15 @@ const ManagedEvents = () => {
   const getManagedEvents = useCallback(async () => {
     try {
       setLoading(true);
-      var mgmevents = await getEventsByManagement(); 
-      setManagedEvents(mgmevents.events);
+      var mgmevents = await getEventsByManagement();
+      console.log(mgmevents, "managed")
+      // setManagedEvents(mgmevents.events);
     } catch (error) {
       console.log({ error });
     } finally {
       setLoading(false);
     }
-  });
+  }, []);
 
   const addEvent = async (data) => {
     try {
@@ -156,7 +157,7 @@ const ManagedEvents = () => {
       >
         <i class="bi bi-plus"></i>
       </Button>
-      <Modal show={show} onHide={handleClose} centered>
+      <Modal show={show} onHide={handleClose} dialogClassName="modal-90w">
         <Modal.Header closeButton>
           <Modal.Title>All Managed Events</Modal.Title>
         </Modal.Header>
