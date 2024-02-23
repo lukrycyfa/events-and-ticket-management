@@ -1,5 +1,5 @@
 //canister code goes here
-import { query, update, text, Record, StableBTreeMap, Variant, Vec, None, Some, Ok, Err, ic, Principal, Opt, nat64, Duration, Result, bool, Canister } from "azle";
+import { query, update, text, Record, StableBTreeMap, Variant, Vec, None, Some, Ok, Err, ic, Principal, Opt, nat64, Duration, Result, bool, Canister, nat8 } from "azle";
 import {
     Ledger, binaryAddressFromPrincipal, hexAddressFromPrincipal
 } from "azle/canisters/ledger";
@@ -14,7 +14,7 @@ const TicketClass = Record({
     badgeUrl: text,
     cost: nat64, 
     createdAt: nat64,
-    updatedAt: Opt(nat64)
+    updatedAt: nat64
 })
 
 const Ticket = Record({
@@ -29,7 +29,7 @@ const Ticket = Record({
     cost: nat64,
     paid: bool,
     createdAt: nat64,
-    updatedAt: Opt(nat64)   
+    updatedAt: nat64   
 });
 
 const Event = Record({
@@ -45,7 +45,7 @@ const Event = Record({
     eventEnd: nat64,
     soldOut: nat64,
     createdAt: nat64,
-    updatedAt: Opt(nat64), 
+    updatedAt: nat64 
 });
 
 const EventManager = Record({
@@ -53,14 +53,14 @@ const EventManager = Record({
     manager: Principal,
     events: Vec(text),
     createdAt: nat64,
-    updatedAt: Opt(nat64), 
+    updatedAt: nat64, 
 });
 
 const AttendeeTickets = Record({
     id: text,
     tickets: Vec(Ticket),
     createdAt: nat64,
-    updatedAt: Opt(nat64), 
+    updatedAt: nat64, 
 });
 
 
@@ -132,8 +132,14 @@ export default Canister({
         return events;
     }),
 
-    getEventsByManagment: query([], EventManager, () => {
-        var eventmanager = eventManagerStorage.get(ic.caller());
+    getEventsByManagment: query([], Result(EventManager, Message), () => {
+        const eventmanagerOpt = eventManagerStorage.get(ic.caller());
+
+        if ("None" in eventmanagerOpt) {
+            return Err({ NotFound: `eventmanger with id=${ic.caller()} not found` });
+        }
+        
+        const eventmanager = eventmanagerOpt.Some;
         for (let i=0; i < eventmanager.events.length; i++){
             let _ticketclass = [];
             let _tickets = [];
@@ -146,11 +152,15 @@ export default Canister({
             } 
             eventmanager.events[i].tickets =_tickets;
         }
-        return eventmanager;
+        return Ok(eventmanager);
     }),
 
-    getAttendeeTickets: query([], AttendeeTickets, () => {
-        return attendeeStorage.get(ic.caller());
+    getAttendeeTickets: query([], Result(AttendeeTickets, Message), () => {
+        const attendeeOpt = attendeeStorage.get(ic.caller());
+        if ("None" in attendeeOpt) {
+            return Err({ NotFound: `attendee with id=${ic.caller()} not found` });
+        }
+        return Ok(attendeeOpt.Some);
     }),
 
     addEvent: update([EventPayload], Result(Event, Message), (payload: EventPayload) => {
@@ -160,10 +170,10 @@ export default Canister({
             return Err({ NotFound: "invalid payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller()); 
-        const newEvent = { id: uuidv4(), manager: ic.caller(), tickets: new Array(), ticketClasses: new Array(), soldOut: 0n, ...payload, createdAt: ic.time(), updatedAt: Opt.None};     
+        const newEvent = { id: uuidv4(), manager: ic.caller(), tickets: new Array(), ticketClasses: new Array(), soldOut: 0n, ...payload, createdAt: ic.time(), updatedAt: ic.time()};     
         eventStorage.insert(newEvent.id, newEvent); 
         if ("None" in eventMgm) {
-            const _eventMgm = { id: uuidv4(), manager: ic.caller(), events: new Array(), createdAt: ic.time(), updatedAt: Opt.None};
+            const _eventMgm = { id: uuidv4(), manager: ic.caller(), events: new Array(), createdAt: ic.time(), updatedAt: ic.time()};
             _eventMgm.events.push(newEvent.id);
             eventManagerStorage.insert(ic.caller(), _eventMgm);
             return Ok(newEvent);
@@ -189,7 +199,7 @@ export default Canister({
             return Err({ NotFound: `event with: id=${eventId} not found or part of management events` });
         }
         const _event = event.Some;
-        const updateEvent = {..._event, ...payload, updatedAt: Opt.Some(ic.time())}
+        const updateEvent = {..._event, ...payload, updatedAt: ic.time()}
         eventStorage.insert(_event.id, updateEvent);
         return Ok(updateEvent);
     }),
@@ -200,10 +210,11 @@ export default Canister({
             return Err({ NotFound: `event manager with: address=${ic.caller()} not found` });
         }
         const updateeventMgm = eventMgm.Some;
-        const deleteEvent = eventStorage.get(eventId);      
-        if ("None" in deleteEvent || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
+        const deleteEventOpt = eventStorage.get(eventId);    
+        if ("None" in deleteEventOpt || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
             return Err({ NotFound: `event with: id=${eventId} not found or part of managements events` });
         }
+        const deleteEvent = deleteEventOpt.Some;
         if (deleteEvent.tickets.length > 0 && deleteEvent.eventEnd > ic.time()) {
             return Err({ NotFound: `event with: id=${eventId} is still a valid event with attendee's` });
         }
@@ -230,14 +241,14 @@ export default Canister({
         }
         const _event = event.Some;
         if (_event.eventEnd < ic.time()) return Err({ NotFound: `event with: id=${eventId} has ended` });
-        const ticketclass = { id: uuidv4(), ...payload, createdAt: ic.time(), updatedAt: Opt.None}
-        const updateEvent = {..._event, ticketClasses: [..._event.ticketClasses, ticketclass.id], updatedAt: Opt.Some(ic.time())}
+        const ticketclass = { id: uuidv4(), ...payload, createdAt: ic.time(), updatedAt: ic.time()}
+        const updateEvent = {..._event, ticketClasses: [..._event.ticketClasses, ticketclass.id], updatedAt: ic.time()}
         ticketClassStorage.insert(ticketclass.id, ticketclass);
         eventStorage.insert(_event.id, updateEvent);
         return Ok(ticketclass);
     }),
 
-    updateTicketClass: update([TicketClassPayload, text, text], Result(TicketClass, Message), (payload: TicketClassPayload, eventId: nat64, ticketclassId: nat64) => {
+    updateTicketClass: update([TicketClassPayload, text, text], Result(TicketClass, Message), (payload: TicketClassPayload, eventId: text, ticketclassId: text) => {
         if (typeof payload !== "object" || Object.keys(payload).length === 0 || !(payload.title.length > 0 && payload.badgeUrl.length > 0 && payload.cost > 0)) {
             return Err({ NotFound: "invalid payload" })
         }
@@ -257,7 +268,7 @@ export default Canister({
             return Err({ NotFound: `ticketclass with: id=${ticketclassId} not found or part of management ticket classes` });
         }
         const _ticketclass = ticketclass.Some;
-        const updateTicketClass = {..._ticketclass, ...payload, updatedAt: Opt.Some(ic.time())}
+        const updateTicketClass = {..._ticketclass, ...payload, updatedAt: ic.time()}
         ticketClassStorage.insert(_ticketclass.id, updateTicketClass);
         return Ok(updateTicketClass);
     }),
@@ -285,7 +296,7 @@ export default Canister({
     }),
 
  
-    makePayment: update([text], Result(Payment, Message), (eventId: text, ticketclassId: text) => {
+    makePayment: update([text, text], Result(Payment, Message), (eventId: text, ticketclassId: text) => {
         const eventOpt = eventStorage.get(eventId);
         if ("None" in eventOpt) {
             return Err({ NotFound: `cannot make payment for: event=${eventId} not found` });
@@ -296,7 +307,7 @@ export default Canister({
         if ("None" in ticketclassOpt || _event.ticketClasses.findIndex((tid: text)=> tid === _ticketclass.id) < 0) {
             return Err({ NotFound: `ticketclass with: ticketclass=${ticketclassId} not found or not part of event` });
         }
-        const _ticketclass = ticketclassOpt.some; 
+        const _ticketclass = ticketclassOpt.Some; 
         const payment = {
             eventId: _event.id,
             ticketClassId: _ticketclass.id,
@@ -335,24 +346,24 @@ export default Canister({
         }
         const _ticketclass = ticketclass.Some;
         const newTicket = { id: uuidv4(), title: _event.title, description: _event.description, eventLocation: _event.eventLocation,
-                    ticketClassTitle: ticketclass.title, attendee: ic.caller(), eventId: _event.id, ticketClassId: _ticketclass.id, 
-                    cost: _ticketclass.cost, paid: true, createdAt: ic.time(), updatedAt: Opt.None};
+                    ticketClassTitle: _ticketclass.title, attendee: ic.caller(), eventId: _event.id, ticketClassId: _ticketclass.id, 
+                    cost: _ticketclass.cost, paid: true, createdAt: ic.time(), updatedAt: ic.time()};
         _event.tickets.push(newTicket.id);
         _event.soldOut += 1n;
-        _event.updatedAt = Opt.Some(ic.time())
+        _event.updatedAt = ic.time();
         eventStorage.insert(_event.id, _event);
         ticketStorage.insert(newTicket.id, newTicket);
         completedPayments.insert(ic.caller(), updatedPayment);      
         const attendee = attendeeStorage.get(ic.caller()); 
         if ("None" in attendee) {
-            const newAttendee = { id: uuidv4(), tickets: new Array(), createdAt: ic.time(), updatedAt: Opt.None };
+            const newAttendee = { id: uuidv4(), tickets: new Array(), createdAt: ic.time(), updatedAt: ic.time() };
             newAttendee.tickets.push(newTicket);
             attendeeStorage.insert(newAttendee.id, newAttendee);
             return Ok(newTicket);
         }
         const _attendee = attendee.Some;
         _attendee.tickets.push(newTicket);
-        _attendee.updatedAt = Opt.Some(ic.time())
+        _attendee.updatedAt = ic.time()
         attendeeStorage.insert(_attendee.id, _attendee);
         return Ok(newTicket);
     }),
@@ -364,10 +375,10 @@ export default Canister({
         }
         const attendDeeOpt = attendDee.Some;
         const ticketOpt = ticketStorage.get(ticketId);       
-        if ("None" in ticketOpt || attendDeeOpt.tickets.findIndex((tid: text)=> tid.id === ticketId) < 0) {
+        if ("None" in ticketOpt || attendDeeOpt.tickets.findIndex((tid: Ticket)=> tid.id === ticketId) < 0) {
             return Err({ NotFound: `ticket with: id=${ticketId} not found or part of attendee's tickets` });
         }    
-        let idx = attendDeeOpt.tickets.findIndex((tid: text)=> tid.id === ticketId);
+        let idx = attendDeeOpt.tickets.findIndex((tid: Ticket)=> tid.id === ticketId);
         deleteEntry(attendDeeOpt.tickets, idx);
         ticketStorage.remove(ticketId);
         return Ok(ticketId);
@@ -394,7 +405,7 @@ export default Canister({
 
 })
 
-function deleteEntry(elements: [], idx: number) {
+function deleteEntry(elements: [], idx: nat8) {
     for(let i = idx; i < elements.length; i++){
         if(i+1 == elements.length) break;
         elements[i] = elements[i+1]
@@ -442,7 +453,7 @@ function discardByTimeout(memo: nat64, delay: Duration) {
 
 async function verifyPaymentInternal(receiver: Principal, amount: nat64, block: nat64, memo: nat64): Promise<bool> {
     const blockData = await ic.call(icpCanister.query_blocks, { args: [{ start: block, length: 1n }] });
-    const tx = blockData.blocks.find((block: nat64) => {
+    const tx = blockData.blocks.find((block) => {
         if ("None" in block.transaction.operation) {
             return false;
         }

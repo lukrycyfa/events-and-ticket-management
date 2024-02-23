@@ -14,7 +14,7 @@ import { getEventsByManagement, createEvent, updateEvent,
 
 const ManagedEvents = () => {
 
-  const [managedevents, setManagedEvents] = useState({});
+  const [managedevents, setManagedEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -22,10 +22,11 @@ const ManagedEvents = () => {
   const handleShow = () => setShow(true);
 
 
-  const getManagedEvents = Callback(async () => {
+  const getManagedEvents = useCallback(async () => {
     try {
       setLoading(true);
-      setManagedEvents(await getEventsByManagement());
+      var mgmevents = await getEventsByManagement(); 
+      setManagedEvents(mgmevents.events);
     } catch (error) {
       console.log({ error });
     } finally {
@@ -166,7 +167,7 @@ const ManagedEvents = () => {
                 <AddEvent save={addEvent} />
             </div>
             <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
-                {managedevents.events.map((_event) => (
+                {managedevents.map((_event) => (
                 <ManagedEvent
                     event={{
                     ..._event,
