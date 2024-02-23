@@ -24,7 +24,7 @@
       "wasm": ".azle/event_manager_js_backend/event_manager_js_backend.wasm",
       "gzip": true
     },
-    "dfinity_js_frontend": {
+    "event_manager_js_frontend": {
       "dependencies": [
         "event_manager_js_backend"
       ],

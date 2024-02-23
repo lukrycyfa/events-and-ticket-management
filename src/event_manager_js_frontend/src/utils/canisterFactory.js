@@ -1,5 +1,5 @@
 import { HttpAgent, Actor } from "@dfinity/agent";
-import { idlFactory as eventManagmentIDL } from "../../../declarations/dfinity_js_backend/dfinity_js_backend.did.js";
+import { idlFactory as eventManagmentIDL } from "../../../declarations/event_manager_js_backend/event_manager_js_backend.did.js";
 import { idlFactory as ledgerIDL } from "../../../declarations/ledger_canister/ledger_canister.did.js";
 
 const EVENTMENAGMENT_CANISTER_ID = "be2us-64aaa-aaaaa-qaabq-cai";
