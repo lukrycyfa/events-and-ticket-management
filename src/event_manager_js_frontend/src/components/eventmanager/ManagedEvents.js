@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-// import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 import AddEvent from "./AddEvent";
@@ -8,13 +8,13 @@ import Loader from "../utils/Loader";
 import { Row } from "react-bootstrap";
 
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-import { getEventsByManagement, createEvent, updateEvent, 
+import { createEvent, updateEvent, 
    addTicketClass, updateTicketClass, deleteEvent, deleteTicketClass 
   } from "../../utils/eventmanagment";
 
-const ManagedEvents = () => {
+const ManagedEvents = ({ managedevents, getmanagedevents }) => {
 
-  const [managedevents, setManagedEvents] = useState([]);
+  const [_managedevents, setManagedEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -22,28 +22,16 @@ const ManagedEvents = () => {
   const handleShow = () => setShow(true);
 
 
-  const getManagedEvents = useCallback(async () => {
-    try {
-      setLoading(true);
-      var mgmevents = await getEventsByManagement();
-      console.log(mgmevents, "managed")
-      // setManagedEvents(mgmevents.events);
-    } catch (error) {
-      console.log({ error });
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   const addEvent = async (data) => {
     try {
       setLoading(true);
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
-      data.eventStart = start;
-      data.eventEnd = end;
+      data.eventStart = start.getTime();
+      data.eventEnd = end.getTime();
       createEvent(data).then((resp) => {
-        getManagedEvents();
+        console.log(resp)
+        getmanagedevents();
       });
       toast(<NotificationSuccess text="Event added successfully." />);
     } catch (error) {
@@ -59,10 +47,11 @@ const ManagedEvents = () => {
       setLoading(true);
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
-      data.eventStart = start;
-      data.eventEnd = end;
+      data.eventStart = start.getTime();
+      data.eventEnd = end.getTime();
       updateEvent(data, eventId).then((resp) => {
-        getManagedEvents();
+        console.log(resp)
+        getmanagedevents();
       });
       toast(<NotificationSuccess text="Event Updated successfully." />);
     } catch (error) {
@@ -77,7 +66,8 @@ const ManagedEvents = () => {
     try {
       setLoading(true);
       deleteEvent(eventId).then((resp) => {
-        getManagedEvents();
+        console.log(resp)
+        getmanagedevents();
       });
       toast(<NotificationSuccess text="Event Delete successfully." />);
     } catch (error) {
@@ -95,7 +85,8 @@ const ManagedEvents = () => {
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
       addTicketClass(data, eventId).then((resp) => {
-        getManagedEvents();
+        console.log(resp)
+        getmanagedevents();
       });
       toast(<NotificationSuccess text="Ticket added successfully." />);
     } catch (error) {
@@ -113,7 +104,8 @@ const ManagedEvents = () => {
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
       updateTicketClass(data, eventId, ticketclassId).then((resp) => {
-        getManagedEvents();
+        console.log(resp)
+        getmanagedevents();
       });
       toast(<NotificationSuccess text="Event Updated successfully." />);
     } catch (error) {
@@ -131,7 +123,8 @@ const ManagedEvents = () => {
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
       deleteTicketClass(eventId, ticketclassId).then((resp) => {
-        getManagedEvents();
+        console.log(resp)
+        getmanagedevents();
       });
       toast(<NotificationSuccess text="Ticket added successfully." />);
     } catch (error) {
@@ -144,8 +137,9 @@ const ManagedEvents = () => {
 
 
   useEffect(() => {
-    getManagedEvents();
-  }, [getManagedEvents]);
+    console.log(managedevents, "managed")
+    // setManagedEvents(managedevents)
+  }, [managedevents]);
 
   return (
     <>
@@ -157,7 +151,7 @@ const ManagedEvents = () => {
       >
         <i class="bi bi-plus"></i>
       </Button>
-      <Modal show={show} onHide={handleClose} dialogClassName="modal-90w">
+      <Modal show={show} onHide={handleClose} fullscreen={true}>
         <Modal.Header closeButton>
           <Modal.Title>All Managed Events</Modal.Title>
         </Modal.Header>
@@ -168,7 +162,7 @@ const ManagedEvents = () => {
                 <AddEvent save={addEvent} />
             </div>
             <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
-                {managedevents.map((_event) => (
+                {_managedevents.map((_event) => (
                 <ManagedEvent
                     event={{
                     ..._event,
@@ -195,5 +189,9 @@ const ManagedEvents = () => {
   );
 };
 
+ManagedEvents.propTypes = {
+  managedevents: PropTypes.instanceOf(Object).isRequired,
+  getmanagedevents: PropTypes.func.isRequired
+};
 
 export default ManagedEvents;

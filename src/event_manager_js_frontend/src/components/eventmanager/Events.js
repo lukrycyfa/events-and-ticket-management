@@ -5,12 +5,14 @@ import PurchasedTicket from "./PurchasedTicket";
 import Loader from "../utils/Loader";
 import { Row } from "react-bootstrap";
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-import { getEvents as getEventList, getAttendeeTickets, deleteTicket,
+import { getEvents as getEventList, getAttendeeTickets, deleteTicket, getEventsByManagement, 
   buyTicket as getTicket } from "../../utils/eventmanagment";
 import ManagedEvents from "./ManagedEvents";
 
 
 const Events = () => {
+
+  const [managedevents, setManagedEvents] = useState([]);
   const [events, setEvents] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,6 +23,20 @@ const Events = () => {
       setLoading(true);
       console.log(await getEventList(), "events")
       // setEvents(await getEventList());
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+
+  const getManagedEvents = useCallback(async () => {
+    try {
+      setLoading(true);
+      var mgmevents = await getEventsByManagement();
+      console.log(mgmevents, "managed")
+      // setManagedEvents(mgmevents.events);
     } catch (error) {
       console.log({ error });
     } finally {
@@ -77,8 +93,9 @@ const Events = () => {
 
   useEffect(() => {
     getEvents();
+    getManagedEvents();
     getMyTickets();
-  }, [getEvents, getMyTickets]);
+  }, [getEvents, getManagedEvents, getMyTickets]);
 
   return (
     <>
@@ -86,7 +103,7 @@ const Events = () => {
         <>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="fs-4 fw-bold mb-0">Get Ticket For Your Entertaiment</h1>
-            {/* <ManagedEvents /> */}
+            <ManagedEvents managedevents={managedevents} getmanagedevents={getManagedEvents} />
           </div>
           <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
             {events.map((_event) => (
