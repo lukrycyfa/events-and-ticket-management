@@ -1,43 +1,40 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack } from "react-bootstrap";
 import { Principal } from "@dfinity/principal";
+import coverImg from "../../assets/img/sandwich.jpg";
 
 const TicketClass = ({ ticketclass, buyticket }) => {
  
-  const { id, title, description, badgeUrl, cost, createdAt } = ticketclass;
+  const { id, title, badgeUrl, cost, createdAt } = ticketclass;
       
 
   return (
     <Col key={id}>
-      <Card className=" h-100">
+      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-            <span className="font-monospace text-secondary">{Principal.from(seller).toText()}</span>
+          {/* <span className="font-monospace text-dark">{Principal.from(seller).toText()}</span> */}
+            <span className="font-monospace text-dark">manager</span>
             <Badge bg="secondary" className="ms-auto">
-              {soldOut.toString()} Sold
+            Ticket Price {(cost / Number(BigInt(10**8))).toString()} 
             </Badge>
           </Stack>
         </Card.Header>
         <div className=" ratio ratio-4x3">
-          <img src={badgeUrl} alt={title} style={{ objectFit: "cover" }} />
+          {/* <img src={badgeUrl} alt={title} style={{ objectFit: "cover" }} /> */}
+          <img src={coverImg} alt={title} style={{ objectFit: "cover" }} />
         </div>
         <Card.Body className="d-flex  flex-column text-center">
           <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 ">{description}</Card.Text>
-          <Card.Text className="text-secondary">
-            <span>{location}</span>
-          </Card.Text>
-          <Card.Text className="text-secondary">
-            
-          </Card.Text>
           <Button
             variant="outline-dark"
             onClick={() => buyticket(id)}
-            className="w-100 py-3"
+            className="rounded-2 border-info shadow-lg w-100"
           >
-            Buy for {(cost / BigInt(10**8)).toString()} ICP
+            Buy for {(cost / Number(BigInt(10**8))).toString()} ICP
           </Button>
+          {console.log(cost * Number(BigInt(10**8)).toString())}
         </Card.Body>
       </Card>
     </Col>

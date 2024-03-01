@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Card, Button, Col, Badge, Stack } from "react-bootstrap";
+import { Card, Button, Col, Badge, Stack, Modal, Row } from "react-bootstrap";
 import { Principal } from "@dfinity/principal";
+import coverImg from "../../assets/img/sandwich.jpg";
 import AddTicketClass from "./AddTicketClass";
 import UpdateTicketClass from "./UpdateTicketClass";
 import UpdateEvent from "./UpdateEvent";
@@ -13,8 +14,9 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
   const [_tickets, setTickets] = useState([]);
   const [ticketclasses, setTicketclasses] = useState([]);       
 
-  const start = new Date(eventStart).toDateString();
-  const end = new Date(eventEnd).toDateString();
+  const start = new Date(eventStart).toUTCString();
+  const end = new Date(eventEnd).toUTCString();
+
 
   const [show, setShow] = useState(false);
   const [_show, _setShow] = useState(false);
@@ -35,65 +37,81 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
 
   return (
     <Col key={id}>
-      <Card className=" h-100">
+      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
-        <AddTicketClass save={addticket} />
-        <UpdateEvent event={event} save={updateevent} />
           <Stack direction="horizontal" gap={2}>
-            <span className="font-monospace text-secondary">{Principal.from(manager).toText()}</span>
+          {/* <span className="font-monospace text-secondary">{Principal.from(manager).toText()}</span> */}
+            <span className="font-monospace text-dark">{manager}</span>
             <Badge bg="secondary" className="ms-auto">
-              {soldOut.toString()} Sold
+              {soldOut.toString()} SoldOut Tickets
             </Badge>
           </Stack>
         </Card.Header>
+        
         <div className=" ratio ratio-4x3">
-          <img src={bannerUrl} alt={title} style={{ objectFit: "cover" }} />
+          <img src={coverImg} alt={title} style={{ objectFit: "cover" }} />
+          {/* <Card.Img variant="top" src={bannerUrl} alt={title} /> */}
         </div>
+        {/* className="rounded-2 border-info shadow-lg" */}
         <Card.Body className="d-flex  flex-column text-center">
           <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 ">{description}</Card.Text>
-          <Card.Text className="flex-grow-1 ">{eventLocation}</Card.Text>
-          <Card.Text className="text-secondary">
-            {/* <span>{location}</span> */}
+          <Card.Text className="flex-grow-1 "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
+          <Card.Text className="flex-grow-2">
+          <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
           </Card.Text>
-          <Card.Text className="text-secondary">
+          <Card.Text className="flex-grow-2">
+          <i className="bi bi-clock-fill"></i><span>{start}</span>
+          </Card.Text>
+          <Card.Text className="flex-grow-2">
+          <i className="bi bi-clock-fill"></i><span>{end}</span>
+          </Card.Text>
+        </Card.Body>
+        <Card.Footer>
+          <Stack direction="horizontal" gap={1}>
           <Button
             onClick={()=> deleteevent(id)}
             variant="danger"
             className="rounded-pill px-0"
             style={{ width: "38px" }}
           >
-            Delete Event
+            <i className="bi bi-trash-fill"></i>
           </Button>  
           <Button
             onClick={handleShow}
             variant="dark"
-            className="rounded-pill px-0"
-            style={{ width: "38px" }}
+            className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
           >
-            <i class="bi bi-plus"></i>
+            Ticket Classes
           </Button>
+          <AddTicketClass save={addticket} eventId={id} />
+          <UpdateEvent event={event} save={updateevent} />
           <Button
             onClick={_handleShow}
             variant="dark"
-            className="rounded-pill px-0"
-            style={{ width: "38px" }}
+            className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
           >
-            <i class="bi bi-minus"></i>
+            Purchased Tickets
           </Button>
-            <Modal show={show} onHide={handleClose} centered>
+          </Stack>
+          </Card.Footer>
+        <Card.Footer className="text-secondary">
+        </Card.Footer>
+            <Modal show={show} onHide={handleClose} size="xl" centered  scrollable={true} backdrop={true} >
               <Modal.Header closeButton>
                 <Modal.Title>Ticket Classes</Modal.Title>
               </Modal.Header>
+              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#662d12"}}>
+
+              <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5">  
               {ticketclasses.map((tic, idx)=>(
-                <>
-                    <Col key={tic.id}>
-                      <Card className=" h-100">
+                
+                    <Col key={idx}>
+                      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
                         <Card.Header>
                           <Stack direction="horizontal" gap={2}>
                             <span className="font-monospace text-secondary"></span>
                             <Badge bg="secondary" className="ms-auto">
-                            {tic.cost.toString()} Ticket Price
+                              Ticket Price {(tic.cost / Number(BigInt(10**8))).toString()}
                             </Badge>
                           </Stack>
                         </Card.Header>
@@ -102,22 +120,27 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                         </div>
                         <Card.Body className="d-flex  flex-column text-center">
                           <Card.Title>{tic.title}</Card.Title>
-                          <Card.Text className="text-secondary">
-                            
-                          </Card.Text>
-                          <Button
-                            variant="outline-dark"
-                            onClick={() => deleteticket(id, tic.id)}
-                            className="w-100 py-3"
-                          >
-                            Delete
-                          </Button>
-                          <UpdateTicketClass ticketclass={tic} save={updateticket} eventId={id} />
                         </Card.Body>
+                        <Card.Footer>
+                        <Stack direction="horizontal" gap={5}>
+                          <Button
+                            onClick={()=> deleteticket(id, tic.id)}
+                            variant="danger"
+                            className="rounded-pill px-0"
+                            style={{ width: "38px" }}
+                          >
+                            <i className="bi bi-trash-fill"></i>
+                          </Button>
+                          <i></i>
+                          <UpdateTicketClass ticketclass={tic} save={updateticket} eventId={id} />
+                          </Stack>
+                        </Card.Footer>
                       </Card>
                     </Col>
-                </>
+                
               ))}
+              </Row>
+              </Modal.Body>
               <Modal.Footer>
                 <Button variant="outline-secondary" onClick={handleClose}>
                   Close
@@ -125,42 +148,43 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
               </Modal.Footer>
             </Modal>
 
-            <Modal show={_show} onHide={_handleClose} centered>
+            <Modal show={_show} onHide={_handleClose} size="xl" centered  scrollable={true} backdrop={true}>
               <Modal.Header closeButton>
                 <Modal.Title>Purchased Tickets</Modal.Title>
               </Modal.Header>
+              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#662d12"}}>
+              <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5"> 
               {_tickets.map((tic, idx)=>(
-                <>
-                    <Col key={tic.id}>
-                      <Card className=" h-100">
+                
+                    <Col key={idx}>
+                      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
                         <Card.Header>
                           <Stack direction="horizontal" gap={2}>
                             <span className="font-monospace text-secondary"></span>
                             <Badge bg="secondary" className="ms-auto">
-                            {tic.cost.toString()} Ticket Price
+                            Ticket Price {(tic.cost / Number(BigInt(10**8))).toString()}
                             </Badge>
                           </Stack>
                         </Card.Header>
-                        <div className=" ratio ratio-4x3">
-                          <img src={tic.badgeUrl} alt={tic.title} style={{ objectFit: "cover" }} />
-                        </div>
                         <Card.Body className="d-flex  flex-column text-center">
                           <Card.Title>{tic.title}</Card.Title>
-                          <Card.Text className="text-secondary">
-                            
-                          </Card.Text>
-                          <Button
-                            variant="outline-dark"
-                            onClick={() => deleteticket(id, tic.id)}
-                            className="w-100 py-3"
-                          >
-                            Delete
-                          </Button>
+                          <Card.Text className="text-dark"><i className="bi bi-info-circle-fill"></i>{tic.ticketClassTitle}</Card.Text>
+                          <Card.Text className="text-dark"><i className="bi bi-info-circle-fill"></i>{tic.description}</Card.Text>
+                          <Card.Text className="text-dark"><i className="bi bi-geo-alt-fill"></i>{tic.eventLocation}</Card.Text>
+                          <Card.Text className="text-dark"><i className="bi bi-person-fill"></i>{tic.attendee}</Card.Text>
+                          <Card.Text className="text-dark">
+                            eventId: <span>{tic.eventId}</span>
+                            </Card.Text>
+                            <Card.Text className="text-dark">
+                            ticketClassId: <span>{tic.ticketClassId}</span>
+                            </Card.Text>
                         </Card.Body>
                       </Card>
                     </Col>
-                </>
+                
               ))}
+              </Row>
+              </Modal.Body>
 
               <Modal.Footer>
                 <Button variant="outline-secondary" onClick={_handleClose}>
@@ -168,8 +192,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                 </Button>
               </Modal.Footer>
             </Modal>
-          </Card.Text>
-        </Card.Body>
+
       </Card>
     </Col>
   );
@@ -177,7 +200,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
 
 ManagedEvent.propTypes = {
   event: PropTypes.instanceOf(Object).isRequired,
-  buyticket: PropTypes.func.isRequired,
+  addticket: PropTypes.func.isRequired,
   updateticket: PropTypes.func.isRequired,
   deleteticket: PropTypes.func.isRequired,
   updateevent: PropTypes.func.isRequired,

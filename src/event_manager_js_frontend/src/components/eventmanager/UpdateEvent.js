@@ -25,20 +25,19 @@ const UpdateEvent = ({ event, save }) => {
       <Button
         onClick={handleShow}
         variant="dark"
-        className="rounded-pill px-0"
-        style={{ width: "38px" }}
+        className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
-        <i class="bi bi-plus"></i>
+        Update Event
       </Button>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>New Product</Modal.Title>
+          <Modal.Title>Update Event</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#f75002"}}>
             <FloatingLabel
-              controlId="inputName"
-              label="Event title"
+              controlId="inputTitle"
+              label="event title"
               className="mb-3"
             >
               <Form.Control
@@ -47,17 +46,17 @@ const UpdateEvent = ({ event, save }) => {
                 onChange={(e) => {
                   setTitle(e.target.value);
                 }}
-                placeholder="Enter event title"
+                placeholder="Event Title"
               />
             </FloatingLabel>
             <FloatingLabel
               controlId="inputUrl"
-              label="Banner URL"
+              label="banner url"
               className="mb-3"
             >
               <Form.Control
                 type="text"
-                placeholder="Banner URL"
+                placeholder="Banner Url"
                 value={_bannerUrl}
                 onChange={(e) => {
                   setBannerUrl(e.target.value);
@@ -66,12 +65,12 @@ const UpdateEvent = ({ event, save }) => {
             </FloatingLabel>
             <FloatingLabel
               controlId="inputDescription"
-              label="Description"
+              label="description"
               className="mb-3"
             >
               <Form.Control
                 as="textarea"
-                placeholder="description"
+                placeholder="Description"
                 value={_description}
                 style={{ height: "80px" }}
                 onChange={(e) => {
@@ -81,12 +80,12 @@ const UpdateEvent = ({ event, save }) => {
             </FloatingLabel>
             <FloatingLabel
               controlId="inputEventLocation"
-              label="EventLoaction"
+              label="event location"
               className="mb-3"
             >
               <Form.Control
                 as="textarea"
-                placeholder="eventlocation"
+                placeholder="Event Location"
                 value={_eventLocation}
                 style={{ height: "80px" }}
                 onChange={(e) => {
@@ -96,11 +95,11 @@ const UpdateEvent = ({ event, save }) => {
             </FloatingLabel>
             <FloatingLabel
               controlId="inputEventstart"
-              label="Location"
+              label="event start"
               className="mb-3"
             >
               <Form.Control
-                type="date"
+                type="datetime-local"
                 placeholder="Event Start"
                 onChange={(e) => {
                   setEventStart(e.target.value);
@@ -109,11 +108,11 @@ const UpdateEvent = ({ event, save }) => {
             </FloatingLabel>
             <FloatingLabel
               controlId="inputEventend"
-              label="Price"
+              label="event end"
               className="mb-3"
             >
               <Form.Control
-                type="date"
+                type="datetime-local"
                 placeholder="Event End"
                 onChange={(e) => {
                   setEventEnd(e.target.value);

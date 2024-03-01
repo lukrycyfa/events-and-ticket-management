@@ -15,7 +15,7 @@ const Wallet = ({ principal, balance, symbol, isAuthenticated, destroy }) => {
             {balance} <span className="ms-1"> {symbol}</span>
           </Dropdown.Toggle>
 
-          <Dropdown.Menu className="shadow-lg border-0">
+          <Dropdown.Menu className="shadow-lg border-0  position-relative">
             <Dropdown.Item>
               <Stack direction="horizontal" gap={2}>
                 <i className="bi bi-person-circle fs-4" />

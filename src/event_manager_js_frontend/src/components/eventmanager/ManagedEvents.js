@@ -1,26 +1,70 @@
-import React, { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
+import { Button, Modal, Stack, Carousel, Container, Col, Row } from "react-bootstrap";
 import AddEvent from "./AddEvent";
 import ManagedEvent from "./ManagedEvent";
 import Loader from "../utils/Loader";
-import { Row } from "react-bootstrap";
+
 
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-import { createEvent, updateEvent, 
+import { createEvent, updateEvent, getEventsByManagement,
    addTicketClass, updateTicketClass, deleteEvent, deleteTicketClass 
   } from "../../utils/eventmanagment";
 
-const ManagedEvents = ({ managedevents, getmanagedevents }) => {
+
+const ManagedEvents = ({ }) => {
 
   const [_managedevents, setManagedEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
+
+  const _tickets = [{ id: "text1", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",
+  attendee: "Principal", eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995},
+  { id: "text2", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",attendee: "Principal", 
+  eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995},
+  { id: "text2", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",attendee: "Principal", 
+  eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995},
+  { id: "text2", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",attendee: "Principal", 
+  eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995}
+]
+
+
+const _ticketclass  = [{ id: "text1", title: "text", badgeUrl: "text", cost: 4500000000, createdAt: 1709162351995, updatedAt: 1709162351995},
+            { id: "text2", title: "text", badgeUrl: "text", cost: 4500000000, createdAt: 1709162351995, updatedAt: 1709162351995},
+            { id: "text2", title: "text", badgeUrl: "text", cost: 4500000000, createdAt: 1709162351995, updatedAt: 1709162351995}]
+
+const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "text", eventLocation: "text", manager: "Principal",
+  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
+  updatedAt: 1709162351995 }, { id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the", bannerUrl: "text", eventLocation: "text", manager: "Principal",
+  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
+  updatedAt: 1709162351995 }, { id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the UI/UX, and added new features and utilities as part of these improvements. Some of the key improvements made are", bannerUrl: "text", eventLocation: "text", manager: "Principal",
+  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
+  updatedAt: 1709162351995 },{ id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the", bannerUrl: "text", eventLocation: "text", manager: "Principal",
+  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
+  updatedAt: 1709162351995 },{ id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the UI/UX, and added new features and utilities as", bannerUrl: "text", eventLocation: "text", manager: "Principal",
+  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
+  updatedAt: 1709162351995 },{ id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the UI/UX, and added new features and utilities as part of these improvements. Some of the key improvements made are the comment section,", bannerUrl: "text", eventLocation: "text", manager: "Principal",
+  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
+  updatedAt: 1709162351995 },
+]
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
+  const getManagedEvents = async () => {
+    try {
+      setLoading(true);
+      var mgmevents = await getEventsByManagement();
+      console.log(mgmevents, "managed")
+      setManagedEvents(_event);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addEvent = async (data) => {
     try {
@@ -31,7 +75,7 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
       data.eventEnd = end.getTime();
       createEvent(data).then((resp) => {
         console.log(resp)
-        getmanagedevents();
+        getManagedEvents();
       });
       toast(<NotificationSuccess text="Event added successfully." />);
     } catch (error) {
@@ -42,6 +86,7 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
     }
   };
 
+
   const updateMyEvent = async (data, eventId) => {
     try {
       setLoading(true);
@@ -51,7 +96,7 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
       data.eventEnd = end.getTime();
       updateEvent(data, eventId).then((resp) => {
         console.log(resp)
-        getmanagedevents();
+        getManagedEvents();
       });
       toast(<NotificationSuccess text="Event Updated successfully." />);
     } catch (error) {
@@ -63,11 +108,11 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
   };
 
   const deletMyEvent = async (eventId) => {
+    setLoading(true);
     try {
-      setLoading(true);
       deleteEvent(eventId).then((resp) => {
         console.log(resp)
-        getmanagedevents();
+        getManagedEvents();
       });
       toast(<NotificationSuccess text="Event Delete successfully." />);
     } catch (error) {
@@ -85,13 +130,13 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
       addTicketClass(data, eventId).then((resp) => {
-        console.log(resp)
-        getmanagedevents();
+        console.log(resp);
+        getManagedEvents();
       });
       toast(<NotificationSuccess text="Ticket added successfully." />);
     } catch (error) {
       console.log({ error });
-      toast(<NotificationError text="Failed to create a Event." />);
+      toast(<NotificationError text="Failed to add Ticket." />);
     } finally {
       setLoading(false);
     }
@@ -105,7 +150,7 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
       data.cost = parseInt(costStr, 10) * 10**8;
       updateTicketClass(data, eventId, ticketclassId).then((resp) => {
         console.log(resp)
-        getmanagedevents();
+        getManagedEvents();
       });
       toast(<NotificationSuccess text="Event Updated successfully." />);
     } catch (error) {
@@ -118,51 +163,54 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
 
 
   const deleteTicket = async (eventId, ticketclassId) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const costStr = data.cost;
-      data.cost = parseInt(costStr, 10) * 10**8;
+
       deleteTicketClass(eventId, ticketclassId).then((resp) => {
         console.log(resp)
-        getmanagedevents();
+        getManagedEvents();
       });
-      toast(<NotificationSuccess text="Ticket added successfully." />);
+      toast(<NotificationSuccess text="Ticket deleted successfully." />);
     } catch (error) {
       console.log({ error });
-      toast(<NotificationError text="Failed to create a Event." />);
+      toast(<NotificationError text="Failed to delete a Event." />);
     } finally {
       setLoading(false);
     }
   };
 
 
-  useEffect(() => {
-    console.log(managedevents, "managed")
-    // setManagedEvents(managedevents)
-  }, [managedevents]);
-
   return (
     <>
       <Button
-        onClick={handleShow}
+        onClick={() => {
+          getManagedEvents()
+          handleShow()}}
         variant="dark"
-        className="rounded-pill px-0"
-        style={{ width: "38px" }}
+        className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
-        <i class="bi bi-plus"></i>
+        Managed Events
       </Button>
-      <Modal show={show} onHide={handleClose} fullscreen={true}>
+      <Modal show={show} onHide={handleClose} size="lg" centered  scrollable={true} backdrop={true} >
         <Modal.Header closeButton>
-          <Modal.Title>All Managed Events</Modal.Title>
+        <Stack direction="horizontal" gap={3}>
+          <Modal.Title>Your Managed Events </Modal.Title>
+        </Stack>  
         </Modal.Header>
-            {!loading ? (
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#662d12"}}>
+          {!loading ? (
             <>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="fs-4 fw-bold mb-0">Get Ticket For Your Entertaiment</h1>
-                <AddEvent save={addEvent} />
-            </div>
-            <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
-                {_managedevents.map((_event) => (
+          <Container>  
+              <Carousel slide  variant="dark" pause interval={null}
+              prevIcon={<Button variant="primary"><i className="bi bi-arrow-left me-2 fs-2" /></Button>}
+              nextIcon={<Button variant="primary"><i className="bi bi-arrow-right me-2 fs-2" /></Button>}
+              >
+                {_managedevents.map((_event, idx) => (
+                <Carousel.Item key={idx}>  
+                      <Row >
+            <Col xs={6} md={2} bg="info">
+            </Col>
+            <Col xs={12} md={8}>    
                 <ManagedEvent
                     event={{
                     ..._event,
@@ -173,13 +221,24 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
                     updateevent={updateMyEvent}
                     deleteevent={deletMyEvent}
                 />
-                ))}
-            </Row>
-            </>
+            </Col>
+            <Col xs={6} md={2}>
+            </Col>
+          </Row>
+                </Carousel.Item>
+                ))}                    
+              </Carousel>
+
+          </Container>
+          </>
         ) : (
             <Loader />
         )}
+          </Modal.Body>  
+
+
         <Modal.Footer>
+        <AddEvent save={addEvent} />
           <Button variant="outline-secondary" onClick={handleClose}>
             Close
           </Button>
@@ -189,9 +248,6 @@ const ManagedEvents = ({ managedevents, getmanagedevents }) => {
   );
 };
 
-ManagedEvents.propTypes = {
-  managedevents: PropTypes.instanceOf(Object).isRequired,
-  getmanagedevents: PropTypes.func.isRequired
-};
+
 
 export default ManagedEvents;

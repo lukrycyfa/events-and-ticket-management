@@ -22,20 +22,19 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
       <Button
         onClick={handleShow}
         variant="dark"
-        className="rounded-pill px-0"
-        style={{ width: "38px" }}
+        className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
-        <i class="bi bi-plus"></i>
+       Update Ticket Class
       </Button>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Update Ticket</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#f75002"}}>
             <FloatingLabel
               controlId="inputName"
-              label="Event title"
+              label="ticket title"
               className="mb-3"
             >
               <Form.Control
@@ -44,12 +43,12 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
                 onChange={(e) => {
                   setTitle(e.target.value);
                 }}
-                placeholder="Enter event title"
+                placeholder="Event Title"
               />
             </FloatingLabel>
             <FloatingLabel
               controlId="inputUrl"
-              label="Badge URL"
+              label="badge url"
               className="mb-3"
             >
               <Form.Control
@@ -62,14 +61,14 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
               />
             </FloatingLabel>
             <FloatingLabel
-              controlId="inputCost"
-              label="Price"
+              controlId="inputPrice"
+              label="price"
               className="mb-3"
             >
               <Form.Control
                 type="text"
-                placeholder="Cost"
-                value={Number(_cost)}
+                placeholder="Price"
+                value={Number(_cost/(10**8))}
                 onChange={(e) => {
                   if (Number(e.target.value) < 0) return;  
                   setCost(e.target.value);

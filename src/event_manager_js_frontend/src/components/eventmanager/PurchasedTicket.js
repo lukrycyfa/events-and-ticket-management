@@ -10,32 +10,39 @@ const PurchasedTicket = ({ ticket, deleteticket }) => {
 
   return (
     <Col key={id}>
-      <Card className=" h-100">
+      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-            <span className="font-monospace text-secondary">{Principal.from(attendee).toText()}</span>
+          {/* <span className="font-monospace text-dark">{Principal.from(attendee).toText()}</span> */}
+            <span className="font-monospace text-dark">{attendee}</span>
             <Badge bg="secondary" className="ms-auto">
-              {cost.toString()} Ticket Price
+              Ticket Price {(cost / Number(BigInt(10**8))).toString()}  ICP
             </Badge>
           </Stack>
         </Card.Header>
-        <div className=" ratio ratio-4x3">
-          <img src="" alt={title} style={{ objectFit: "cover" }} />
-        </div>
         <Card.Body className="d-flex  flex-column text-center">
           <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 ">{description}</Card.Text>
-          <Card.Text className="text-secondary">
-            <span>{ticketClassTitle}</span>
+          <Card.Text className="text-dark">
+          eventId: <span>{eventId}</span>
           </Card.Text>
+          <Card.Text className="text-dark">
+          ticketClassId: <span>{ticketClassId}</span>
+          </Card.Text>
+          <Card.Text className="text-dark">
+          <i className="bi bi-info-circle-fill"></i><span>{ticketClassTitle}</span>
+          </Card.Text>
+          <Card.Text className="text-dark">
+          <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
+          </Card.Text>
+          <Card.Text className="flex-grow-1 "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
           <Card.Text className="text-secondary">
           <Button
             onClick={() => deleteticket(id)}
-            variant="dark"
+            variant="danger"
             className="rounded-pill px-0"
             style={{ width: "38px" }}
           >
-            <i class="bi bi-plus"></i>
+            <i className="bi bi-trash"></i>
           </Button>
           </Card.Text>
         </Card.Body>

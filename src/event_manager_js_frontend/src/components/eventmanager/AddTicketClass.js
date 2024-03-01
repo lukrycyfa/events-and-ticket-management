@@ -21,20 +21,19 @@ const AddTicketClass = ({ save, eventId }) => {
       <Button
         onClick={handleShow}
         variant="dark"
-        className="rounded-pill px-0"
-        style={{ width: "38px" }}
+        className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
-        <i class="bi bi-plus"></i>
+       Add Ticket
       </Button>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>New Ticket</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#f75002"}}>
             <FloatingLabel
-              controlId="inputName"
-              label="Event title"
+              controlId="inputTitle"
+              label="ticket title"
               className="mb-3"
             >
               <Form.Control
@@ -42,30 +41,30 @@ const AddTicketClass = ({ save, eventId }) => {
                 onChange={(e) => {
                   setTitle(e.target.value);
                 }}
-                placeholder="Enter event title"
+                placeholder="Event Title"
               />
             </FloatingLabel>
             <FloatingLabel
               controlId="inputUrl"
-              label="Badge URL"
+              label="badge url"
               className="mb-3"
             >
               <Form.Control
                 type="text"
-                placeholder="Badge URL"
+                placeholder="Badge Url"
                 onChange={(e) => {
                     setBadgeUrl(e.target.value);
                 }}
               />
             </FloatingLabel>
             <FloatingLabel
-              controlId="inputCost"
-              label="Price"
+              controlId="inputPrice"
+              label="price"
               className="mb-3"
             >
               <Form.Control
-                type="date"
-                placeholder="Cost"
+                type="text"
+                placeholder="Price"
                 onChange={(e) => {
                   if (Number(e.target.value) < 0) return;  
                   setCost(e.target.value);
