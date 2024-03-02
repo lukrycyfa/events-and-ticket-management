@@ -56,8 +56,10 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   const getManagedEvents = async () => {
     try {
       setLoading(true);
-      var mgmevents = await getEventsByManagement();
-      console.log(mgmevents, "managed")
+      const _mgmevents = await getEventsByManagement();
+      console.log(_mgmevents, "managed")
+      if (_mgmevents.Err) return;
+      // setManagedEvents(_mgmevents.Ok.events);
       setManagedEvents(_event);
     } catch (error) {
       console.log({ error });
@@ -73,10 +75,13 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
       const end = new Date(Date.parse(data.eventEnd));
       data.eventStart = start.getTime();
       data.eventEnd = end.getTime();
-      createEvent(data).then((resp) => {
-        console.log(resp)
-        getManagedEvents();
-      });
+      const _create =  await createEvent(data);
+      if (_create.Err) {
+        toast(<NotificationError text={`${_create.Err}`} />);
+        return;
+      }
+      console.log(_create)
+      getManagedEvents();
       toast(<NotificationSuccess text="Event added successfully." />);
     } catch (error) {
       console.log({ error });
@@ -94,10 +99,13 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
       const end = new Date(Date.parse(data.eventEnd));
       data.eventStart = start.getTime();
       data.eventEnd = end.getTime();
-      updateEvent(data, eventId).then((resp) => {
-        console.log(resp)
-        getManagedEvents();
-      });
+      const _update =  await updateEvent(data, eventId);
+      if (_update.Err) {
+        toast(<NotificationError text={`${_update.Err}`} />);
+        return;
+      }
+      console.log(_update);
+      getManagedEvents();
       toast(<NotificationSuccess text="Event Updated successfully." />);
     } catch (error) {
       console.log({ error });
@@ -110,10 +118,13 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   const deletMyEvent = async (eventId) => {
     setLoading(true);
     try {
-      deleteEvent(eventId).then((resp) => {
-        console.log(resp)
-        getManagedEvents();
-      });
+      const _delete =  await deleteEvent(eventId);
+      if (_delete.Err) {
+        toast(<NotificationError text={`${_delete.Err}`} />);
+        return;
+      }
+      console.log(_delete);
+      getManagedEvents();
       toast(<NotificationSuccess text="Event Delete successfully." />);
     } catch (error) {
       console.log({ error });
@@ -129,14 +140,17 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
       setLoading(true);
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
-      addTicketClass(data, eventId).then((resp) => {
-        console.log(resp);
-        getManagedEvents();
-      });
-      toast(<NotificationSuccess text="Ticket added successfully." />);
+      const _add =  await addTicketClass(data, eventId);
+      if (_add.Err) {
+        toast(<NotificationError text={`${_add.Err}`} />);
+        return;
+      }
+      console.log(_add);
+      getManagedEvents();
+      toast(<NotificationSuccess text="TicketClass added successfully." />);
     } catch (error) {
       console.log({ error });
-      toast(<NotificationError text="Failed to add Ticket." />);
+      toast(<NotificationError text="Failed to add TicketClass." />);
     } finally {
       setLoading(false);
     }
@@ -148,14 +162,17 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
       setLoading(true);
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
-      updateTicketClass(data, eventId, ticketclassId).then((resp) => {
-        console.log(resp)
-        getManagedEvents();
-      });
-      toast(<NotificationSuccess text="Event Updated successfully." />);
+      const _update =  await updateTicketClass(data, eventId, ticketclassId);
+      if (_update.Err) {
+        toast(<NotificationError text={`${_update.Err}`} />);
+        return;
+      }
+      console.log(_update);
+      getManagedEvents();
+      toast(<NotificationSuccess text="TicketClass Updated successfully." />);
     } catch (error) {
       console.log({ error });
-      toast(<NotificationError text="Failed to Update Event." />);
+      toast(<NotificationError text="Failed to Update TicketClass." />);
     } finally {
       setLoading(false);
     }
@@ -165,15 +182,17 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   const deleteTicket = async (eventId, ticketclassId) => {
     setLoading(true);
     try {
-
-      deleteTicketClass(eventId, ticketclassId).then((resp) => {
-        console.log(resp)
-        getManagedEvents();
-      });
-      toast(<NotificationSuccess text="Ticket deleted successfully." />);
+      const _delete =  await deleteTicketClass(eventId, ticketclassId);
+      if (_delete.Err) {
+        toast(<NotificationError text={`${_delete.Err}`} />);
+        return;
+      }
+      console.log(_delete);
+      getManagedEvents();
+      toast(<NotificationSuccess text="TicketClass deleted successfully." />);
     } catch (error) {
       console.log({ error });
-      toast(<NotificationError text="Failed to delete a Event." />);
+      toast(<NotificationError text="Failed to delete a TicketClass." />);
     } finally {
       setLoading(false);
     }

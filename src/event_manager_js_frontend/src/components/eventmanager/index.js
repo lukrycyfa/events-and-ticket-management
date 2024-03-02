@@ -70,8 +70,10 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   const getMyTickets = useCallback(async () => {
     try {
       setLoading(true);
+      const _tickets = await getAttendeeTickets();
+      if (_tickets.Err) return;
       console.log(await getAttendeeTickets(), "tickets")
-      // setTickets(await getAttendeeTickets());
+      // setTickets(_tickets.Ok);
     } catch (error) {
       console.log({ error });
     } finally {
@@ -80,16 +82,17 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   }, []);
 
   //  function to initiate transaction
-  const buyTicket = async (id, tid) => {
+  const buyTicket = async (eid, tid) => {
     try {
       setLoading(true);
-      await getTicket({
-        id, tid
-      }).then((resp) => {
+      const _getticket = await getTicket({eid, tid});
+      if (_getticket.Err) {
+        toast(<NotificationError text={`${_getticket.Err}`} />);
+        return;
+      }
         getEvents();
         getMyTickets();
         toast(<NotificationSuccess text="Purchased Ticket Successfully" />);
-      });
     } catch (error) {
       toast(<NotificationError text="Failed to purchase ticket." />);
     } finally {
@@ -101,12 +104,13 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   const deleteMyTicket = async (id) => {
     setLoading(true);
     try {
-      await deleteTicket({
-        id
-      }).then((resp) => {
-        getMyTickets();
-        toast(<NotificationSuccess text="Ticket Deleted successfully" />);
-      });
+      const _delete =  await deleteTicket({id});
+      if (_delete.Err) {
+        toast(<NotificationError text={`${_delete.Err}`} />);
+        return;
+      }
+      getMyTickets();
+      toast(<NotificationSuccess text="Ticket Deleted successfully" />);
     } catch (error) {
       toast(<NotificationError text="Failed to delete ticket." />);
     } finally {
