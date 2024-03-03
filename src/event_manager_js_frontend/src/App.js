@@ -7,7 +7,7 @@ import { login, logout as destroy } from "./utils/auth";
 import { balance as principalBalance } from "./utils/ledger"
 import Cover from "./components/utils/Cover";
 import { Notification } from "./components/utils/Notifications";
-import Events from "./components/eventmanager/Events";
+import Events from "./components/eventmanager";
 
 
 const App = function AppWrapper() {
