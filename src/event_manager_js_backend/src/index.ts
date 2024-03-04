@@ -39,8 +39,8 @@ const Event = Record({
     bannerUrl: text,
     eventLocation: text,
     manager: Principal,
-    tickets: Vec(text),
-    ticketClasses: Vec(text),
+    tickets: Vec(Ticket),
+    ticketClasses: Vec(TicketClass),
     eventStart: nat64,
     eventEnd: nat64,
     soldOut: nat64,
@@ -51,7 +51,7 @@ const Event = Record({
 const EventManager = Record({
     id: text,
     manager: Principal,
-    events: Vec(text),
+    events: Vec(Event),
     createdAt: nat64,
     updatedAt: nat64, 
 });
@@ -122,12 +122,7 @@ export default Canister({
     getAllEvents: query([], Vec(Event), () => {
         var events = eventStorage.values();
         for (let i = 0; i < events.length; i++){
-            let _ticketclass = [];
-            for (let t = 0; t < events[i].ticketClasses.length; t++){
-                _ticketclass.push(ticketClassStorage.get(events[i].ticketClasses[t]));
-            } 
             events[i].tickets = [];
-            events[i].ticketClasses = _ticketclass;
         }
         return events;
     }),
@@ -140,18 +135,6 @@ export default Canister({
         }
         
         const eventmanager = eventmanagerOpt.Some;
-        for (let i=0; i < eventmanager.events.length; i++){
-            let _ticketclass = [];
-            let _tickets = [];
-            for (let t = 0; t < eventmanager.events[i].ticketClasses.length; t++){
-                _ticketclass.push(ticketClassStorage.get(eventmanager.events[i].ticketClasses[t]));
-            } 
-            eventmanager.events[i].ticketClasses =_ticketclass;
-            for (let ti = 0; ti < eventmanager.events[i].tickets.length; ti++){
-                _tickets.push(ticketStorage.get(eventmanager.events[i].tickets[ti]));
-            } 
-            eventmanager.events[i].tickets =_tickets;
-        }
         return Ok(eventmanager);
     }),
 
@@ -164,8 +147,8 @@ export default Canister({
     }),
 
     addEvent: update([EventPayload], Result(Event, Message), (payload: EventPayload) => {
-        if (typeof payload !== "object" || Object.keys(payload).length === 0 || 
-        !(payload.title.length > 0 && payload.description.length > 0 && payload.eventLocation.length > 0 && payload.bannerUrl.length > 0 && payload.eventStart >= ic.time() && payload.eventEnd > ic.time()))  {
+        if (typeof payload !== "object" || Object.keys(payload).length === 0
+        || payload.title.length <= 0 || payload.description.length <= 0 || payload.eventLocation.length <= 0 || payload.bannerUrl.length <= 0 || payload.eventStart < ic.time() && payload.eventEnd <= payload.eventStart)  {
             
             return Err({ NotFound: "invalid payload" })
         }
@@ -174,19 +157,19 @@ export default Canister({
         eventStorage.insert(newEvent.id, newEvent); 
         if ("None" in eventMgm) {
             const _eventMgm = { id: uuidv4(), manager: ic.caller(), events: new Array(), createdAt: ic.time(), updatedAt: ic.time()};
-            _eventMgm.events.push(newEvent.id);
+            _eventMgm.events.push(newEvent);
             eventManagerStorage.insert(ic.caller(), _eventMgm);
             return Ok(newEvent);
         }
         const updateeventMgm = eventMgm.Some;
-        updateeventMgm.events.push(newEvent.id);
+        updateeventMgm.events.push(newEvent);
         eventManagerStorage.insert(ic.caller(), updateeventMgm);
         return Ok(newEvent);
     }),
 
     updateEvent: update([EventPayload, text], Result(Event, Message), (payload: EventPayload, eventId: text) => {
-        if (typeof payload !== "object" || Object.keys(payload).length === 0 ||
-        !(payload.title.length > 0 && payload.description.length > 0 && payload.eventLocation.length > 0 && payload.bannerUrl.length > 0 && payload.eventStart >= ic.time() && payload.eventEnd > ic.time())) {
+          if (typeof payload !== "object" || Object.keys(payload).length === 0 ||
+        payload.title.length <= 0 || payload.description.length <= 0 || payload.eventLocation.length <= 0 || payload.bannerUrl.length <= 0 || payload.eventStart < ic.time() && payload.eventEnd <= payload.eventStart) {
             return Err({ NotFound: "invalid payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller());       
@@ -195,11 +178,12 @@ export default Canister({
         }
         const updateeventMgm = eventMgm.Some;
         const event = eventStorage.get(eventId);       
-        if ("None" in event || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
+        if ("None" in event || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
             return Err({ NotFound: `event with: id=${eventId} not found or part of management events` });
         }
         const _event = event.Some;
-        const updateEvent = {..._event, ...payload, updatedAt: ic.time()}
+        const updateEvent = {..._event, ...payload, updatedAt: ic.time()};
+        updateeventMgm.events[updateeventMgm.events.findIndex((eid)=> eid.id === eventId)] = updateEvent;
         eventStorage.insert(_event.id, updateEvent);
         return Ok(updateEvent);
     }),
@@ -211,14 +195,14 @@ export default Canister({
         }
         const updateeventMgm = eventMgm.Some;
         const deleteEventOpt = eventStorage.get(eventId);    
-        if ("None" in deleteEventOpt || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
+        if ("None" in deleteEventOpt || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
             return Err({ NotFound: `event with: id=${eventId} not found or part of managements events` });
         }
         const deleteEvent = deleteEventOpt.Some;
         if (deleteEvent.tickets.length > 0 && deleteEvent.eventEnd > ic.time()) {
             return Err({ NotFound: `event with: id=${eventId} is still a valid event with attendee's` });
         }
-        let idx = updateeventMgm.events.findIndex((eid: text)=> eid === eventId);
+        let idx = updateeventMgm.events.findIndex((eid)=> eid.id === eventId);
         deleteEntry(updateeventMgm.events, idx);
         eventManagerStorage.insert(ic.caller(), updateeventMgm);
         eventStorage.remove(eventId);
@@ -227,7 +211,7 @@ export default Canister({
 
 
     addTicketClass: update([TicketClassPayload, text], Result(TicketClass, Message), (payload: TicketClassPayload, eventId: text) => {
-        if (typeof payload !== "object" || Object.keys(payload).length === 0 || !(payload.title.length > 0 && payload.badgeUrl.length > 0 && payload.cost > 0)) {
+        if (typeof payload !== "object" || Object.keys(payload).length === 0 || payload.title.length <= 0 || payload.badgeUrl.length <= 0 || payload.cost <= 0) {
             return Err({ NotFound: "invalid payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller());       
@@ -236,20 +220,20 @@ export default Canister({
         }
         const updateeventMgm = eventMgm.Some;
         const event = eventStorage.get(eventId);       
-        if ("None" in event || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
-            return Err({ NotFound: `event with: id=${eventId} not found or part of managment events` });
+        if ("None" in event || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
+            return Err({ NotFound: `upevent with: id=${eventId} not found or part of managment events` });
         }
         const _event = event.Some;
         if (_event.eventEnd < ic.time()) return Err({ NotFound: `event with: id=${eventId} has ended` });
         const ticketclass = { id: uuidv4(), ...payload, createdAt: ic.time(), updatedAt: ic.time()}
-        const updateEvent = {..._event, ticketClasses: [..._event.ticketClasses, ticketclass.id], updatedAt: ic.time()}
+        const updateEvent = {..._event, ticketClasses: [..._event.ticketClasses, ticketclass], updatedAt: ic.time()}
         ticketClassStorage.insert(ticketclass.id, ticketclass);
         eventStorage.insert(_event.id, updateEvent);
         return Ok(ticketclass);
     }),
 
     updateTicketClass: update([TicketClassPayload, text, text], Result(TicketClass, Message), (payload: TicketClassPayload, eventId: text, ticketclassId: text) => {
-        if (typeof payload !== "object" || Object.keys(payload).length === 0 || !(payload.title.length > 0 && payload.badgeUrl.length > 0 && payload.cost > 0)) {
+        if (typeof payload !== "object" || Object.keys(payload).length === 0 || payload.title.length <= 0 || payload.badgeUrl.length <= 0 || payload.cost <= 0) {
             return Err({ NotFound: "invalid payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller());       
@@ -258,17 +242,18 @@ export default Canister({
         }
         const updateeventMgm = eventMgm.Some;
         const event = eventStorage.get(eventId);       
-        if ("None" in event || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
+        if ("None" in event || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
             return Err({ NotFound: `event with: id=${eventId} not found or part of management events` });
         }
         const _event = event.Some;
         if (_event.eventEnd < ic.time()) return Err({ NotFound: `event with: id=${eventId} has ended` });
         const ticketclass = ticketClassStorage.get(ticketclassId);       
-        if ("None" in ticketclass || _event.ticketClasses.findIndex((tid: text)=> tid === ticketclassId) < 0) {
+        if ("None" in ticketclass || _event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId) < 0) {
             return Err({ NotFound: `ticketclass with: id=${ticketclassId} not found or part of management ticket classes` });
         }
         const _ticketclass = ticketclass.Some;
         const updateTicketClass = {..._ticketclass, ...payload, updatedAt: ic.time()}
+        _event.ticketClasses[_event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId)] = updateTicketClass;
         ticketClassStorage.insert(_ticketclass.id, updateTicketClass);
         return Ok(updateTicketClass);
     }),
@@ -280,15 +265,15 @@ export default Canister({
         }
         const updateeventMgm = eventMgm.Some;
         const event = eventStorage.get(eventId);       
-        if ("None" in event || updateeventMgm.events.findIndex((eid: text)=> eid === eventId) < 0) {
+        if ("None" in event || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
             return Err({ NotFound: `event with: id=${eventId} not found or in event management` });
         }
         const _event = event.Some;
         const ticketclass = ticketClassStorage.get(ticketclassId);       
-        if ("None" in ticketclass || _event.ticketClasses.findIndex((tid: text)=> tid === ticketclassId) < 0) {
+        if ("None" in ticketclass || _event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId) < 0) {
             return Err({ NotFound: `ticketclass with: id=${ticketclassId} not found or part of event management` });
         }
-        let idx = _event.ticketClasses.findIndex((tid: text)=> tid === ticketclassId);
+        let idx = _event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId);
         deleteEntry(_event.ticketClasses, idx);
         eventStorage.insert(eventId, _event);
         ticketClassStorage.remove(ticketclassId); 
@@ -304,7 +289,7 @@ export default Canister({
         const _event = eventOpt.Some;
         if (_event.eventEnd < ic.time()) return Err({ NotFound: `event with: id=${eventId} has ended` });
         const ticketclassOpt = ticketClassStorage.get(ticketclassId);
-        if ("None" in ticketclassOpt || _event.ticketClasses.findIndex((tid: text)=> tid === _ticketclass.id) < 0) {
+        if ("None" in ticketclassOpt || _event.ticketClasses.findIndex((tid)=> tid.id === _ticketclass.id) < 0) {
             return Err({ NotFound: `ticketclass with: ticketclass=${ticketclassId} not found or not part of event` });
         }
         const _ticketclass = ticketclassOpt.Some; 
@@ -341,14 +326,14 @@ export default Canister({
         }
         const _event = eventOpt.Some;
         const ticketclass = ticketClassStorage.get(payment.ticketClassId);       
-        if ("None" in ticketclass || _event.ticketClasses.findIndex((eid: nat64)=> eid === payment.ticketClassId) < 0) {
+        if ("None" in ticketclass || _event.ticketClasses.findIndex((eid)=> eid.id === payment.ticketClassId) < 0) {
             return Err({ NotFound: `ticketClass for Event with: id=${payment.ticketClassId} not found` });
         }
         const _ticketclass = ticketclass.Some;
         const newTicket = { id: uuidv4(), title: _event.title, description: _event.description, eventLocation: _event.eventLocation,
                     ticketClassTitle: _ticketclass.title, attendee: ic.caller(), eventId: _event.id, ticketClassId: _ticketclass.id, 
                     cost: _ticketclass.cost, paid: true, createdAt: ic.time(), updatedAt: ic.time()};
-        _event.tickets.push(newTicket.id);
+        _event.tickets.push(newTicket);
         _event.soldOut += 1n;
         _event.updatedAt = ic.time();
         eventStorage.insert(_event.id, _event);
