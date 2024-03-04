@@ -23,42 +23,13 @@ const Events = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
- const _tickets = [{ id: "text1", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",
-  attendee: "Principal", eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995},
-  { id: "text2", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",attendee: "Principal", 
-  eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995},
-  { id: "text2", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",attendee: "Principal", 
-  eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995},
-  { id: "text2", title: "text", description: "text", eventLocation: "text", ticketClassTitle: "text",attendee: "Principal", 
-  eventId: "text", ticketClassId: "text", cost: 4500000000, paid: true, createdAt: 1709162351995, updatedAt: 1709162351995}
-]
-
-
-const _ticketclass  = [{ id: "text1", title: "text", badgeUrl: "text", cost: 4500000000, createdAt: 1709162351995, updatedAt: 1709162351995},
-            { id: "text2", title: "text", badgeUrl: "text", cost: 4500000000, createdAt: 1709162351995, updatedAt: 1709162351995},
-            { id: "text2", title: "text", badgeUrl: "text", cost: 4500000000, createdAt: 1709162351995, updatedAt: 1709162351995}]
-
-const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "text", eventLocation: "text", manager: "Principal",
-  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
-  updatedAt: 1709162351995 }, { id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the", bannerUrl: "text", eventLocation: "text", manager: "Principal",
-  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
-  updatedAt: 1709162351995 }, { id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the UI/UX, and added new features and utilities as part of these improvements. Some of the key improvements made are", bannerUrl: "text", eventLocation: "text", manager: "Principal",
-  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
-  updatedAt: 1709162351995 },{ id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the", bannerUrl: "text", eventLocation: "text", manager: "Principal",
-  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
-  updatedAt: 1709162351995 },{ id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the UI/UX, and added new features and utilities as", bannerUrl: "text", eventLocation: "text", manager: "Principal",
-  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
-  updatedAt: 1709162351995 },{ id: "text2", title: "text", description: "On this celo marketplace front-end project, developed for the Celo marketplace contract I have made a couple of improvements to the UI/UX, and added new features and utilities as part of these improvements. Some of the key improvements made are the comment section,", bannerUrl: "text", eventLocation: "text", manager: "Principal",
-  tickets: _tickets, ticketClasses: _ticketclass, eventStart: 1709162351995, eventEnd: 1709167351995, soldOut: 5, createdAt: 1709162351995,
-  updatedAt: 1709162351995 },
-]
 
   // function to get the list of products
   const getEvents = useCallback(async () => {
     try {
       setLoading(true);
       console.log(await getEventList(), "events")
-      // setEvents(await getEventList());
+      setEvents(await getEventList());
     } catch (error) {
       console.log({ error });
     } finally {
@@ -73,7 +44,7 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
       const _tickets = await getAttendeeTickets();
       if (_tickets.Err) return;
       console.log(await getAttendeeTickets(), "tickets")
-      // setTickets(_tickets.Ok);
+      setTickets(_tickets.Ok.tickets);
     } catch (error) {
       console.log({ error });
     } finally {
@@ -121,8 +92,6 @@ const _event = [{ id: "text1", title: "text", description: "text", bannerUrl: "t
   useEffect(() => {
     getEvents();
     getMyTickets();
-    setEvents(_event);
-    setTickets(_tickets);
   }, [getEvents, getMyTickets]);
 
   return (
