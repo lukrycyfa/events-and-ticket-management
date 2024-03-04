@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Modal, Row } from "react-bootstrap";
 import { Principal } from "@dfinity/principal";
-import coverImg from "../../assets/img/sandwich.jpg";
 import TicketClass from "./TicketClass";
 
 const Event = ({ event, buyticket }) => {
@@ -10,8 +9,8 @@ const Event = ({ event, buyticket }) => {
   const { id, title, description, eventLocation, bannerUrl, manager, ticketClasses, eventStart, eventEnd, soldOut } = event;
   const [ticketclasses, setTicketclasses] = useState([]);
   
-  const start = new Date(eventStart).toUTCString();
-  const end = new Date(eventEnd).toUTCString();
+  const start = new Date(Number(eventStart)).toUTCString();
+  const end = new Date(Number(eventEnd)).toUTCString();
 
   const triggerBuy = (ticketclassId) => {
     buyticket(id, ticketclassId);
@@ -36,16 +35,14 @@ const Event = ({ event, buyticket }) => {
       <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          {/* <span className="font-monospace text-dark">{Principal.from(manager).toText()}</span> */}
-            <span className="font-monospace text-dark">{manager}</span>
+          <span className="font-monospace text-dark">{Principal.from(manager).toText()}</span>
             <Badge bg="secondary" className="ms-auto">
               {soldOut.toString()} SoldOut Tickets
             </Badge>
           </Stack>
         </Card.Header>
         <div className=" ratio ratio-4x3">
-          {/* <img src={bannerUrl} alt={title} style={{ objectFit: "cover" }} /> */}
-          <img src={coverImg} alt={title} style={{ objectFit: "cover" }} />
+          <img src={bannerUrl} alt={title} style={{ objectFit: "cover" }} />
         </div>
         <Card.Body className="d-flex  flex-column text-center">
           <Card.Title>{title}</Card.Title>
