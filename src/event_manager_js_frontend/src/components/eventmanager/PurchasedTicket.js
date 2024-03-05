@@ -13,10 +13,9 @@ const PurchasedTicket = ({ ticket, deleteticket }) => {
       <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          {/* <span className="font-monospace text-dark">{Principal.from(attendee).toText()}</span> */}
-            <span className="font-monospace text-dark">{attendee}</span>
+          <span className="font-monospace text-dark">{Principal.from(attendee).toText().slice(0, 12)}...</span>
             <Badge bg="secondary" className="ms-auto">
-              Ticket Price {(cost / Number(BigInt(10**8))).toString()}  ICP
+              Ticket Price {(Number(cost) / 10**8).toString()} ICP
             </Badge>
           </Stack>
         </Card.Header>

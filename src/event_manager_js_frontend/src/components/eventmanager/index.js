@@ -58,7 +58,7 @@ const Events = () => {
       setLoading(true);
       const _getticket = await getTicket(eid, tid);
       if (_getticket.Err) {
-        toast(<NotificationError text={`${_getticket.Err}`} />);
+        toast(<NotificationError text={`${_getticket.Err.NotFound}`} />);
         return;
       }
         getEvents();
@@ -76,9 +76,9 @@ const Events = () => {
   const deleteMyTicket = async (id) => {
     setLoading(true);
     try {
-      const _delete =  await deleteTicket({id});
+      const _delete =  await deleteTicket(id);
       if (_delete.Err) {
-        toast(<NotificationError text={`${_delete.Err}`} />);
+        toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
       }
       getMyTickets();

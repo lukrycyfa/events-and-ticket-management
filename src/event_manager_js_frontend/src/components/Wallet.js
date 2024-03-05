@@ -36,10 +36,14 @@ const Wallet = ({ principal, balance, symbol, isAuthenticated, destroy }) => {
               onClick={() => {
                 copyAddress();
               }}
+              data-bs-toggle="tooltip" data-bs-placement="top" title="Copy Address"
             >
+              <Stack direction="horizontal"  gap={1}>
                 <i className="bi bi-person-circle fs-4" />  
-                <span className="font-monospace">{principal.toString().slice(0, 10)}</span>
-                <i className="bi bi-clipboard-data-fill fs-4">!</i>
+                <span className="font-monospace">{principal.toString().slice(0, 10)}...
+                <i className="bi bi-clipboard-fill fs-4">!</i></span>
+                
+                </Stack>
             </Dropdown.Item>
 
             <Dropdown.Divider />

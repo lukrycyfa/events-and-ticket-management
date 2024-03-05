@@ -35,7 +35,7 @@ const Event = ({ event, buyticket }) => {
       <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          <span className="font-monospace text-dark">{Principal.from(manager).toText()}</span>
+          <span className="font-monospace text-dark">{Principal.from(manager).toText().slice(0, 17)}...</span>
             <Badge bg="secondary" className="ms-auto">
               {soldOut.toString()} SoldOut Tickets
             </Badge>

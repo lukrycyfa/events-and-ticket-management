@@ -46,7 +46,7 @@ const ManagedEvents = ({ getevents }) => {
       data.eventEnd = end.getTime()*1000000;
       const _create =  await createEvent(data);
       if (_create.Err) {
-        toast(<NotificationError text={`${_create.Err}`} />);
+        toast(<NotificationError text={`${_create.Err.NotFound}`} />);
         return;
       }
       console.log(_create)
@@ -70,7 +70,7 @@ const ManagedEvents = ({ getevents }) => {
       data.eventEnd = end.getTime()*1000000;
       const _update =  await updateEvent(data, eventId);
       if (_update.Err) {
-        toast(<NotificationError text={`${_update.Err}`} />);
+        toast(<NotificationError text={`${_update.Err.NotFound}`} />);
         return;
       }
       console.log(_update);
@@ -89,7 +89,7 @@ const ManagedEvents = ({ getevents }) => {
     try {
       const _delete =  await deleteEvent(eventId);
       if (_delete.Err) {
-        toast(<NotificationError text={`${_delete.Err}`} />);
+        toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
       }
       console.log(_delete);
@@ -112,7 +112,7 @@ const ManagedEvents = ({ getevents }) => {
       const _add =  await addTicketClass(data, eventId);
       console.log(_add)
       if (_add.Err) {
-        toast(<NotificationError text={`${_add.Err}`} />);
+        toast(<NotificationError text={`${_add.Err.NotFound}`} />);
         return;
       }
       console.log(_add);
@@ -134,7 +134,7 @@ const ManagedEvents = ({ getevents }) => {
       data.cost = parseInt(costStr, 10) * 10**8;
       const _update =  await updateTicketClass(data, eventId, ticketclassId);
       if (_update.Err) {
-        toast(<NotificationError text={`${_update.Err}`} />);
+        toast(<NotificationError text={`${_update.Err.NotFound}`} />);
         return;
       }
       console.log(_update);
@@ -154,7 +154,7 @@ const ManagedEvents = ({ getevents }) => {
     try {
       const _delete =  await deleteTicketClass(eventId, ticketclassId);
       if (_delete.Err) {
-        toast(<NotificationError text={`${_delete.Err}`} />);
+        toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
       }
       console.log(_delete);

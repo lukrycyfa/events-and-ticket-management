@@ -336,10 +336,10 @@ export default Canister({
         const updatedPayment = { ...payment, status: { Completed: "COMPLETED" }, paid_at_block: Some(block) };
         const eventOpt = eventStorage.get(payment.eventId);
         if ("None" in eventOpt) {
-            throw Error(`event with id=${payment.eventId} not found`);
+            return Err({ NotFound: `event with id=${payment.eventId} not found` });
         }
         const _event = eventOpt.Some;
-        const _mgm = eventManagerStorage.get(_event.manger);
+        const _mgm = eventManagerStorage.get(manager);
         const ticketclass = ticketClassStorage.get(payment.ticketClassId);       
         if ("None" in ticketclass || _event.ticketClasses.findIndex((eid)=> eid.id === payment.ticketClassId) < 0) {
             return Err({ NotFound: `ticketClass for Event with: id=${payment.ticketClassId} not found` });
@@ -355,7 +355,7 @@ export default Canister({
         eventStorage.insert(_event.id, _event);
         ticketStorage.insert(newTicket.id, newTicket);
         completedPayments.insert(ic.caller(), updatedPayment);
-        eventManagerStorage.insert(_event.manger, _mgm);
+        eventManagerStorage.insert(manager, _mgm.Some);
         pendingPayments.remove(memo);      
         const attendee = attendeeStorage.get(ic.caller()); 
         if ("None" in attendee) {
@@ -378,11 +378,12 @@ export default Canister({
         }
         const attendDeeOpt = attendDee.Some;
         const ticketOpt = ticketStorage.get(ticketId);       
-        if ("None" in ticketOpt || attendDeeOpt.tickets.findIndex((tid: Ticket)=> tid.id === ticketId) < 0) {
+        if ("None" in ticketOpt || attendDeeOpt.tickets.findIndex((tid)=> tid.id === ticketId) < 0) {
             return Err({ NotFound: `ticket with: id=${ticketId} not found or part of attendee's tickets` });
         }    
-        let idx = attendDeeOpt.tickets.findIndex((tid: Ticket)=> tid.id === ticketId);
+        let idx = attendDeeOpt.tickets.findIndex((tid)=> tid.id === ticketId);
         deleteEntry(attendDeeOpt.tickets, idx);
+        attendeeStorage.insert(ic.caller(), attendDeeOpt); 
         ticketStorage.remove(ticketId);
         return Ok(ticketId);
     }),

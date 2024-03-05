@@ -39,7 +39,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
       <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          <span className="font-monospace text-secondary">{Principal.from(manager).toText()}</span>
+          <span className="font-monospace text-dark">{Principal.from(manager).toText().slice(0, 25)}...</span>
             <Badge bg="secondary" className="ms-auto">
               {soldOut.toString()} SoldOut Tickets
             </Badge>
@@ -169,7 +169,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                           <Card.Text className="text-dark"><i className="bi bi-info-circle-fill"></i>{tic.ticketClassTitle}</Card.Text>
                           <Card.Text className="text-dark"><i className="bi bi-info-circle-fill"></i>{tic.description}</Card.Text>
                           <Card.Text className="text-dark"><i className="bi bi-geo-alt-fill"></i>{tic.eventLocation}</Card.Text>
-                          <Card.Text className="text-dark"><i className="bi bi-person-fill"></i>{tic.attendee}</Card.Text>
+                          <Card.Text className="text-dark"><i className="bi bi-person-fill"></i>{Principal.from(tic.attendee).toText().slice(0, 15)}...</Card.Text>
                           <Card.Text className="text-dark">
                             eventId: <span>{tic.eventId}</span>
                             </Card.Text>
