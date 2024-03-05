@@ -9,8 +9,8 @@ const Event = ({ event, buyticket }) => {
   const { id, title, description, eventLocation, bannerUrl, manager, ticketClasses, eventStart, eventEnd, soldOut } = event;
   const [ticketclasses, setTicketclasses] = useState([]);
   
-  const start = new Date(Number(eventStart)).toUTCString();
-  const end = new Date(Number(eventEnd)).toUTCString();
+  const start = new Date(Number(eventStart)/1000000).toUTCString();
+  const end = new Date(Number(eventEnd)/1000000).toUTCString();
 
   const triggerBuy = (ticketclassId) => {
     buyticket(id, ticketclassId);

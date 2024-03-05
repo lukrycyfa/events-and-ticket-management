@@ -108,7 +108,7 @@ const Events = () => {
           <Nav className="me-auto">
           <Stack direction="horizontal" gap={2}> 
           <Nav.Item>
-          <ManagedEvents />
+          <ManagedEvents getevents={getEvents} />
           </Nav.Item>
           <Nav.Item>
           <Button

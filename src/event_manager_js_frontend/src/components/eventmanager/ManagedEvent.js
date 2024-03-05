@@ -13,8 +13,8 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
   const [_tickets, setTickets] = useState([]);
   const [ticketclasses, setTicketclasses] = useState([]);       
 
-  const start = new Date(Number(eventStart)).toUTCString();
-  const end = new Date(Number(eventEnd)).toUTCString();
+  const start = new Date(Number(eventStart)/1000000).toUTCString();
+  const end = new Date(Number(eventEnd)/1000000).toUTCString();
 
 
   const [show, setShow] = useState(false);
@@ -108,7 +108,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                           <Stack direction="horizontal" gap={2}>
                             <span className="font-monospace text-secondary"></span>
                             <Badge bg="secondary" className="ms-auto">
-                              Ticket Price {(tic.cost / Number(BigInt(10**8))).toString()}
+                              Ticket Price {(Number(tic.cost) / 10**8).toString()} ICP
                             </Badge>
                           </Stack>
                         </Card.Header>
@@ -159,7 +159,8 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                           <Stack direction="horizontal" gap={2}>
                             <span className="font-monospace text-secondary"></span>
                             <Badge bg="secondary" className="ms-auto">
-                            Ticket Price {(tic.cost / Number(BigInt(10**8))).toString()}
+                              
+                            Ticket Price {(Number(tic.cost) / 10**8).toString()} ICP
                             </Badge>
                           </Stack>
                         </Card.Header>

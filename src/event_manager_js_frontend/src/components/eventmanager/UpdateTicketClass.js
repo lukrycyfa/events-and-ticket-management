@@ -7,7 +7,7 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
 
   const [_title, setTitle] = useState(title);
   const [_badgeUrl, setBadgeUrl] = useState(badgeUrl);
-  const [_cost, setCost] = useState(cost);
+  const [_cost, setCost] = useState(Number(cost)/10**8);
   const [eventid, setSetEventId] = useState(eventId);
 
   const isFormFilled = () => title && badgeUrl && cost;
@@ -68,7 +68,7 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
               <Form.Control
                 type="text"
                 placeholder="Price"
-                value={Number(_cost/(10**8))}
+                value={_cost}
                 onChange={(e) => {
                   if (Number(e.target.value) < 0) return;  
                   setCost(e.target.value);
@@ -84,11 +84,11 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
           <Button
             variant="dark"
             disabled={!isFormFilled()}
-            onClick={() => {
+            onClick={() => {              
               save({
-                _title,
-                _badgeUrl,
-                _cost
+                title: _title,
+                badgeUrl: _badgeUrl,
+                cost: _cost
               }, eventid, id);
               handleClose();
             }}

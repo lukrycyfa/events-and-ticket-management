@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 import { Button, Modal, Stack, Carousel, Container, Col, Row } from "react-bootstrap";
 import AddEvent from "./AddEvent";
 import ManagedEvent from "./ManagedEvent";
@@ -12,7 +13,7 @@ import { createEvent, updateEvent, getEventsByManagement,
   } from "../../utils/eventmanagment";
 
 
-const ManagedEvents = ({ }) => {
+const ManagedEvents = ({ getevents }) => {
 
   const [_managedevents, setManagedEvents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,8 +42,8 @@ const ManagedEvents = ({ }) => {
       setLoading(true);
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
-      data.eventStart = start.getTime();
-      data.eventEnd = end.getTime();
+      data.eventStart = start.getTime()*1000000;
+      data.eventEnd = end.getTime()*1000000;
       const _create =  await createEvent(data);
       if (_create.Err) {
         toast(<NotificationError text={`${_create.Err}`} />);
@@ -65,8 +66,8 @@ const ManagedEvents = ({ }) => {
       setLoading(true);
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
-      data.eventStart = start.getTime();
-      data.eventEnd = end.getTime();
+      data.eventStart = start.getTime()*1000000;
+      data.eventEnd = end.getTime()*1000000;
       const _update =  await updateEvent(data, eventId);
       if (_update.Err) {
         toast(<NotificationError text={`${_update.Err}`} />);
@@ -83,7 +84,7 @@ const ManagedEvents = ({ }) => {
     }
   };
 
-  const deletMyEvent = async (eventId) => {
+  const deleteMyEvent = async (eventId) => {
     setLoading(true);
     try {
       const _delete =  await deleteEvent(eventId);
@@ -93,6 +94,7 @@ const ManagedEvents = ({ }) => {
       }
       console.log(_delete);
       getManagedEvents();
+      getevents()
       toast(<NotificationSuccess text="Event Delete successfully." />);
     } catch (error) {
       console.log({ error });
@@ -180,7 +182,7 @@ const ManagedEvents = ({ }) => {
         Managed Events
       </Button>
       <Modal show={show} onHide={handleClose} size="lg" centered  scrollable={true} backdrop={true} >
-        <Modal.Header closeButton>
+        <Modal.Header >
         <Stack direction="horizontal" gap={3}>
           <Modal.Title>Your Managed Events </Modal.Title>
         </Stack>  
@@ -207,7 +209,7 @@ const ManagedEvents = ({ }) => {
                     updateticket={updateTicket}
                     deleteticket={deleteTicket}
                     updateevent={updateMyEvent}
-                    deleteevent={deletMyEvent}
+                    deleteevent={deleteMyEvent}
                 />
             </Col>
             <Col xs={6} md={2}>
@@ -227,7 +229,9 @@ const ManagedEvents = ({ }) => {
 
         <Modal.Footer>
         <AddEvent save={addEvent} />
-          <Button variant="outline-secondary" onClick={handleClose}>
+          <Button variant="outline-secondary" onClick={() => {handleClose();
+          getevents();}
+          }>
             Close
           </Button>
         </Modal.Footer>
@@ -236,6 +240,8 @@ const ManagedEvents = ({ }) => {
   );
 };
 
-
+ManagedEvents.propTypes = {
+  getevents: PropTypes.func.isRequired 
+};
 
 export default ManagedEvents;

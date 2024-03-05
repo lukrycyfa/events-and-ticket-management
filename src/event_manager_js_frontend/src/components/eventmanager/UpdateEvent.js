@@ -130,12 +130,12 @@ const UpdateEvent = ({ event, save }) => {
             disabled={!isFormFilled()}
             onClick={() => {
               save({
-                _title,
-                _bannerUrl,
-                _description,
-                _eventLocation,
-                _eventStart,
-                _eventEnd,
+                title: _title,
+                bannerUrl: _bannerUrl,
+                description: _description,
+                eventLocation: _eventLocation,
+                eventStart: _eventStart,
+                eventEnd: _eventEnd,
               }, id);
               handleClose();
             }}
