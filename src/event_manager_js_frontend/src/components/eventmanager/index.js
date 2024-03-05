@@ -1,3 +1,4 @@
+// imported dependencies
 import React, { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import Event from "./Event";
@@ -9,17 +10,18 @@ import { getEvents as getEventList, getAttendeeTickets, deleteTicket,
   buyTicket as getTicket } from "../../utils/eventmanagment";
 import ManagedEvents from "./ManagedEvents";
 
-
+// The All Events Construct
 const Events = () => {
 
-
+  // all events, purchased tickets and loading state variabled
   const [events, setEvents] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
 
 
+  // purchased tickets modal state 
   const [show, setShow] = useState(false);
-
+  // purchased tickets modal state togglers
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

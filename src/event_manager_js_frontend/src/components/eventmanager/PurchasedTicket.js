@@ -1,11 +1,12 @@
+// imported dependencies
 import React from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack } from "react-bootstrap";
 import { Principal } from "@dfinity/principal";
 
-
+// The PurchasedTicket construct taking a ticket as instance and a deleteticket function as --props
 const PurchasedTicket = ({ ticket, deleteticket }) => {
- 
+  // instance of a purchased ticket
   const { id, title, description, eventLocation, ticketClassTitle, attendee, eventId, ticketClassId, cost, paid, createdAt } = ticket;
 
   return (

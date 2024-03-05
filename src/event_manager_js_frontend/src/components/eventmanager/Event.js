@@ -1,24 +1,32 @@
+// imported dependencies
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Modal, Row } from "react-bootstrap";
 import { Principal } from "@dfinity/principal";
 import TicketClass from "./TicketClass";
 
+// The Event construct taking an event instance and a buyticket function as --props
 const Event = ({ event, buyticket }) => {
  
+  // an event instance
   const { id, title, description, eventLocation, bannerUrl, manager, ticketClasses, eventStart, eventEnd, soldOut } = event;
+  
+  // an event ticketclasses state variable
   const [ticketclasses, setTicketclasses] = useState([]);
   
+  // timstamps converted to milliseconds
   const start = new Date(Number(eventStart)/1000000).toUTCString();
   const end = new Date(Number(eventEnd)/1000000).toUTCString();
 
+  // purchase aticket
   const triggerBuy = (ticketclassId) => {
     buyticket(id, ticketclassId);
   };
 
 
+  // event tickets modal state 
   const [show, setShow] = useState(false);
-
+  // event tickets modal state toggler
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

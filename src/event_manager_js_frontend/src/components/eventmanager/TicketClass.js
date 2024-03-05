@@ -1,11 +1,12 @@
+// imported dependencies
 import React from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack } from "react-bootstrap";
 
-
+// The TicketClass construct taking a ticketclass as instance and a buyticket function as --props
 const TicketClass = ({ ticketclass, buyticket }) => {
- 
-  const { id, title, badgeUrl, cost, createdAt } = ticketclass;
+  // a ticket class instance
+  const { id, title, badgeUrl, cost } = ticketclass;
       
 
   return (

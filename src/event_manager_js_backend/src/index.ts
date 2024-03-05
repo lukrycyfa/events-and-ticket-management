@@ -7,7 +7,7 @@ import { hashCode } from "hashcode";
 import { v4 as uuidv4 } from "uuid";
 
 
-
+// A Construct holding attributes of a TicketClass of type Record
 const TicketClass = Record({
     id: text,
     title: text,
@@ -17,6 +17,7 @@ const TicketClass = Record({
     updatedAt: nat64
 })
 
+// A Construct holding attributes of a Ticket of type Record
 const Ticket = Record({
     id: text,
     title: text,
@@ -32,6 +33,7 @@ const Ticket = Record({
     updatedAt: nat64   
 });
 
+// A Construct holding attributes of an Event of type Record
 const Event = Record({
     id: text,
     title: text,
@@ -48,6 +50,7 @@ const Event = Record({
     updatedAt: nat64 
 });
 
+// A Construct holding attributes of an Event Manager of type Record
 const EventManager = Record({
     id: text,
     manager: Principal,
@@ -56,6 +59,7 @@ const EventManager = Record({
     updatedAt: nat64, 
 });
 
+// A Construct holding attributes of an AttendeeTickets of type Record
 const AttendeeTickets = Record({
     id: text,
     tickets: Vec(Ticket),
@@ -64,13 +68,14 @@ const AttendeeTickets = Record({
 });
 
 
+// A Construct holding attributes for a TicketClassPayload of type Record
 const TicketClassPayload = Record({
     title: text,
     cost: nat64,
     badgeUrl: text
 })
 
-
+// A Construct holding attributes for an EventPayload of type Record
 const EventPayload = Record({
     title: text,
     description: text,
@@ -80,12 +85,13 @@ const EventPayload = Record({
     eventEnd: nat64
 });
 
-
+// A Construct holding attributes for a PaymentStatus of type Variant
 const PaymentStatus = Variant({
     PaymentPending: text,
     Completed: text
 });
 
+// A Construct holding attributes for a Payment of type Record
 const Payment = Record({
     eventId: text,
     ticketClassId: text,
@@ -96,6 +102,7 @@ const Payment = Record({
     memo: nat64
 });
 
+// A Construct holding attributes for a Message of type Variant
 const Message = Variant({
     NotFound: text,
     InvalidPayload: text,
@@ -104,7 +111,8 @@ const Message = Variant({
     ApprovedAdvert: text
 });
 
-
+// Data storage locations and mappings for eventManager's, attendee's, event's, ticket's,
+// ticketClasses, completedPayments and pendingPayments.
 const eventManagerStorage = StableBTreeMap(0, Principal, EventManager);
 const attendeeStorage = StableBTreeMap(1, Principal, AttendeeTickets);
 const eventStorage = StableBTreeMap(2, text, Event);
@@ -113,32 +121,38 @@ const ticketClassStorage = StableBTreeMap(4, text, TicketClass);
 const completedPayments = StableBTreeMap(5, Principal, Payment);
 const pendingPayments = StableBTreeMap(6, nat64, Payment);
 
+// Create an instance of the ledger canister
 const icpCanister = Ledger(Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
 
 const PAYMENT_RESERVATION_PERIOD = 120n; // reservation period in seconds
 
-
+// The Event Manager Construct.
 export default Canister({
+
+    // Query and retrive all events created on the canister
     getAllEvents: query([], Vec(Event), () => {
         var events = eventStorage.values();
+        // Ommit purchased tickets and return events
         for (let i = 0; i < events.length; i++){
             events[i].tickets = [];
         }
         return events;
     }),
 
+    // Query and retrive all events realated to an Event Manager on the canister
     getEventsByManagment: query([], Result(EventManager, Message), () => {
+        // query for an event manager and retrive, events associated
         const eventmanagerOpt = eventManagerStorage.get(ic.caller());
-
         if ("None" in eventmanagerOpt) {
-            return Err({ NotFound: `eventmanger with id=${ic.caller()} not found` });
+            return Err({ NotFound: `event manager with id=${ic.caller()} not found` });
         }
-        
         const eventmanager = eventmanagerOpt.Some;
         return Ok(eventmanager);
     }),
 
+    // Query and retrive all Tickets realated to an Attendee on the canister
     getAttendeeTickets: query([], Result(AttendeeTickets, Message), () => {
+        // query for an Attendee and retrive, Tickets associated
         const attendeeOpt = attendeeStorage.get(ic.caller());
         if ("None" in attendeeOpt) {
             return Err({ NotFound: `attendee with id=${ic.caller()} not found` });
@@ -146,11 +160,13 @@ export default Canister({
         return Ok(attendeeOpt.Some);
     }),
 
+    // Create and Add an Event to the Canister
     addEvent: update([EventPayload], Result(Event, Message), (payload: EventPayload) => {
+        // make assertions on the payload, Create a new Event Manager from the caller if non exist's, create a new Event, 
+        // associate it with the caller i.e the event manager and make updates.
         if (typeof payload !== "object" || Object.keys(payload).length === 0
         || payload.title.length <= 0 || payload.description.length <= 0 || payload.eventLocation.length <= 0 || payload.bannerUrl.length <= 0 || payload.eventStart < ic.time() || payload.eventEnd <= payload.eventStart)  {
-            
-            return Err({ NotFound: "invalid payload" })
+            return Err({ NotFound: "Invalid Payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller()); 
         const newEvent = { id: uuidv4(), manager: ic.caller(), tickets: new Array(), ticketClasses: new Array(), soldOut: 0n, ...payload, createdAt: ic.time(), updatedAt: ic.time()};     
@@ -167,10 +183,13 @@ export default Canister({
         return Ok(newEvent);
     }),
 
+    // Update an Event created on the Canister  
     updateEvent: update([EventPayload, text], Result(Event, Message), (payload: EventPayload, eventId: text) => {
-          if (typeof payload !== "object" || Object.keys(payload).length === 0 ||
+        // make assertions on the payload, get Event Manager instance associated with the caller if any exist's, 
+        // make assertions on the eventId and make updates to Event and Event Manager.
+        if (typeof payload !== "object" || Object.keys(payload).length === 0 ||
         payload.title.length <= 0 || payload.description.length <= 0 || payload.eventLocation.length <= 0 || payload.bannerUrl.length <= 0 || payload.eventStart < ic.time() || payload.eventEnd <= payload.eventStart) {
-            return Err({ NotFound: "invalid payload" })
+            return Err({ NotFound: "Invalid Payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller());       
         if ("None" in eventMgm) {
@@ -190,7 +209,10 @@ export default Canister({
         return Ok(updateEvent);
     }),
 
+    // Delete an Event created on the Canister
     deleteEvent: update([text], Result(text, Message), (eventId: text) => {
+        // get Event Manager instance associated with the caller if any exist's, 
+        // make assertions on the eventId, Event for validity and Delete Event from Event's storage and Event Manager.
         const eventMgm = eventManagerStorage.get(ic.caller());       
         if ("None" in eventMgm) {
             return Err({ NotFound: `event manager with: address=${ic.caller()} not found` });
@@ -211,8 +233,10 @@ export default Canister({
         return Ok(deleteEvent.id);
     }),
 
-
+    // Add a Ticket Class to an Event on the Canister
     addTicketClass: update([TicketClassPayload, text], Result(TicketClass, Message), (payload: TicketClassPayload, eventId: text) => {
+        // make assertions on the payload, Event Manager instance from the caller if any exist's and eventId for a valid Event. 
+        // create a new ticket class and associate it with the event with `eventId` and the caller i.e the event manager and make updates.
         if (typeof payload !== "object" || Object.keys(payload).length === 0 || payload.title.length <= 0 || payload.badgeUrl.length <= 0 || payload.cost <= 0) {
             return Err({ NotFound: "invalid payload" })
         }
@@ -237,7 +261,11 @@ export default Canister({
         return Ok(ticketclass);
     }),
 
+    // Update a Ticket Class to an Event created on the Canister
     updateTicketClass: update([TicketClassPayload, text, text], Result(TicketClass, Message), (payload: TicketClassPayload, eventId: text, ticketclassId: text) => {
+        // make assertions on the payload, get Event Manager instance associated with the caller if any exist's, 
+        // make assertions on the `eventId` and Event associated, the `ticketclassId` and ticket associated
+        // and make updates to the Ticketclass, Event and Event Manager.
         if (typeof payload !== "object" || Object.keys(payload).length === 0 || payload.title.length <= 0 || payload.badgeUrl.length <= 0 || payload.cost <= 0) {
             return Err({ NotFound: "invalid payload" })
         }
@@ -268,7 +296,11 @@ export default Canister({
         return Ok(updateTicketClass);
     }),
 
+    // Delete a Ticket Class from an Event on the Canister 
     deleteTicketClass: update([text, text], Result(text, Message), (eventId: text, ticketclassId: text) => {
+        // get Event Manager instance associated with the caller if any exist's, 
+        // make assertions on the `eventId` and Event associated, the `ticketclassId` and ticket associated
+        // and delete the ticket from the Event, Event Manager and storage.
         const eventMgm = eventManagerStorage.get(ic.caller());       
         if ("None" in eventMgm) {
             return Err({ NotFound: `event manager with: address=${ic.caller()} not found` });
@@ -276,9 +308,10 @@ export default Canister({
         const updateeventMgm = eventMgm.Some;
         const event = eventStorage.get(eventId);       
         if ("None" in event || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
-            return Err({ NotFound: `event with: id=${eventId} not found or in event management` });
+            return Err({ NotFound: `event with: id=${eventId} not found or part of management's events` });
         }
         const _event = event.Some;
+        if (_event.eventEnd > ic.time() && _event.tickets.findIndex((t)=> t.ticketClassId === ticketclassId ) >= 0) return Err({ NotFound: `event with: id=${eventId} has valid purchased ticket`});
         const ticketclass = ticketClassStorage.get(ticketclassId);       
         if ("None" in ticketclass || _event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId) < 0) {
             return Err({ NotFound: `ticketclass with: id=${ticketclassId} not found or part of event management` });
@@ -294,8 +327,12 @@ export default Canister({
         return Ok(ticketclass.Some.id);
     }),
 
- 
+    // Make Payments for Tickets Associated with Events on the Canister
     makePayment: update([text, text], Result(Payment, Message), (eventId: text, ticketclassId: text) => {
+        // make assertions on the `eventId` and Event associated, the `ticketclassId` and ticket associated
+        // create a payment instance with a pending status, place it in the pendingPayments storage,
+        // and set a `discardByTimeout` to the payment to discard the proccess after a period of time.
+        // completed or not.
         const eventOpt = eventStorage.get(eventId);
         if ("None" in eventOpt) {
             return Err({ NotFound: `cannot make payment for: event=${eventId} not found` });
@@ -321,13 +358,18 @@ export default Canister({
         return Ok(payment);
     }),
 
-
+    // Get Ticket's associated with a pending payments to an Event Ticket.
     getTicket: update([Principal, nat64, nat64, nat64], Result(Ticket, Message), async (manager: Principal, price: nat64, 
         block: nat64, memo: nat64) => {
+        // Make verifications on tickets payment with manager, price, block and memo as --args   
         const paymentVerified = await verifyPaymentInternal(manager, price, block, memo);
         if (!paymentVerified) {
             return Err({ NotFound: `payment for event with, memo=${memo} could not be verified` });
         }
+        // Get pending payment from storage with memo if it exist's, update payment, get event and ticket class 
+        // associted with payment if they exist, update event, create and add a new ticket into storage, complete payment status,
+        // update the Event Manager, created a new Attendee instance for the caler if non exist and associate the ticket with the 
+        // Attendee
         const pendingpaymentOpt = pendingPayments.get(memo);
         if ("None" in pendingpaymentOpt) {
             return Err({ NotFound: `could not complete transaction: there is no pending payment with id=${memo}` });
@@ -371,7 +413,11 @@ export default Canister({
         return Ok(newTicket);
     }),
 
+    // Delete a ticket associated with an Attendee from The Canister
     deleteTicket: update([text], Result(text, Message), (ticketId: text) => {
+        // get Attendee instance associated with the caller if any exist's, 
+        // make assertions on the `ticketId` and Attendee's ticket's
+        // and delete the ticket from the attendee's tickets and storage.
         const attendDee = attendeeStorage.get(ic.caller());       
         if ("None" in attendDee) {
             return Err({ NotFound: `event manager with: address=${ic.caller()} not found` });
@@ -409,6 +455,7 @@ export default Canister({
 
 })
 
+// a helper function to remove entries from array's taking the array and index to remove as --args
 function deleteEntry(elements: [], idx: nat8) {
     for(let i = idx; i < elements.length; i++){
         if(i+1 == elements.length) break;
@@ -419,7 +466,7 @@ function deleteEntry(elements: [], idx: nat8) {
 
 /*
     a hash function that is used to generate correlation ids for orders.
-    also, we use that in the verifyPayment function where we check if the used has actually paid the order
+    also, we use that in the verifyPayment function where we check if the user has actually paid the order
 */
 function hash(input: any): nat64 {
     return BigInt(Math.abs(hashCode().value(input)));

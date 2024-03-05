@@ -1,9 +1,12 @@
+// imported dependencies
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 
+// The create event construct taking a save function as prop
 const AddEvent = ({ save }) => {
-  
+
+  // An event attributes state variable's
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [eventLocation, setEventLocation] = useState("");
@@ -11,10 +14,12 @@ const AddEvent = ({ save }) => {
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
 
+  // form input vlidation
   const isFormFilled = () => title && bannerUrl && description && eventLocation && eventStart && eventEnd;
 
+  // Add event modal state 
   const [show, setShow] = useState(false);
-
+  // Add event modal state togglers
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

@@ -1,11 +1,15 @@
+// imported dependencies
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 
+// The UpdateEvent construct taking an event instance and a save function as prop's
 const UpdateEvent = ({ event, save }) => {
 
+  // an instance of an event
   const {id,  title, description, eventLocation, bannerUrl, eventStart, eventEnd} = event;  
 
+  // An event attributes state variable's
   const [_title, setTitle] = useState(title);
   const [_description, setDescription] = useState(description);
   const [_eventLocation, setEventLocation] = useState(eventLocation);
@@ -13,10 +17,12 @@ const UpdateEvent = ({ event, save }) => {
   const [_eventStart, setEventStart] = useState(eventStart);
   const [_eventEnd, setEventEnd] = useState(eventEnd);
 
+  // form input vlidation
   const isFormFilled = () => _title && _bannerUrl && _eventLocation && _description && _eventStart && _eventEnd;
 
+  // Update event modal state 
   const [show, setShow] = useState(false);
-
+  // Update event modal state togglers
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

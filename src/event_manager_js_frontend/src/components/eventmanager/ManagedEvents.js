@@ -1,3 +1,4 @@
+// imported dependencies
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
@@ -5,27 +6,29 @@ import { Button, Modal, Stack, Carousel, Container, Col, Row } from "react-boots
 import AddEvent from "./AddEvent";
 import ManagedEvent from "./ManagedEvent";
 import Loader from "../utils/Loader";
-
-
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
 import { createEvent, updateEvent, getEventsByManagement,
    addTicketClass, updateTicketClass, deleteEvent, deleteTicketClass 
   } from "../../utils/eventmanagment";
 
-
+// The ManageEvent construct taking the getevents function as --prop
 const ManagedEvents = ({ getevents }) => {
 
+  //manageevents, loading 
   const [_managedevents, setManagedEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [show, setShow] = useState(false);
 
+  // managedevent  modal state 
+  const [show, setShow] = useState(false);
+  // managedevent modal state toggler
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
+  // get all managed event
   const getManagedEvents = async () => {
     try {
       setLoading(true);
+      // call the canister
       const _mgmevents = await getEventsByManagement();
       console.log(_mgmevents, "managed")
       if (_mgmevents.Err) return;
@@ -37,13 +40,16 @@ const ManagedEvents = ({ getevents }) => {
     }
   };
 
+  // add an event
   const addEvent = async (data) => {
     try {
       setLoading(true);
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
+      // timstamps converted to microseconds
       data.eventStart = start.getTime()*1000000;
       data.eventEnd = end.getTime()*1000000;
+      // call the canister
       const _create =  await createEvent(data);
       if (_create.Err) {
         toast(<NotificationError text={`${_create.Err.NotFound}`} />);
@@ -60,14 +66,16 @@ const ManagedEvents = ({ getevents }) => {
     }
   };
 
-
+  // update an event
   const updateMyEvent = async (data, eventId) => {
     try {
       setLoading(true);
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
+      // timstamps converted to microseconds
       data.eventStart = start.getTime()*1000000;
       data.eventEnd = end.getTime()*1000000;
+      // call the canister
       const _update =  await updateEvent(data, eventId);
       if (_update.Err) {
         toast(<NotificationError text={`${_update.Err.NotFound}`} />);
@@ -84,9 +92,11 @@ const ManagedEvents = ({ getevents }) => {
     }
   };
 
+  // delete an event
   const deleteMyEvent = async (eventId) => {
     setLoading(true);
     try {
+      // call the canister
       const _delete =  await deleteEvent(eventId);
       if (_delete.Err) {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
@@ -103,12 +113,13 @@ const ManagedEvents = ({ getevents }) => {
     }
   };
 
-
+  // add a ticket class
   const addTicket = async (data, eventId) => {
     try {
       setLoading(true);
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
+      // call the canister
       const _add =  await addTicketClass(data, eventId);
       console.log(_add)
       if (_add.Err) {
@@ -126,12 +137,13 @@ const ManagedEvents = ({ getevents }) => {
     }
   };
 
-
+  // update a ticket class
   const updateTicket = async (data, eventId, ticketclassId) => {
     try {
       setLoading(true);
       const costStr = data.cost;
       data.cost = parseInt(costStr, 10) * 10**8;
+      // call the canister
       const _update =  await updateTicketClass(data, eventId, ticketclassId);
       if (_update.Err) {
         toast(<NotificationError text={`${_update.Err.NotFound}`} />);
@@ -148,10 +160,11 @@ const ManagedEvents = ({ getevents }) => {
     }
   };
 
-
+  // delete a ticket class
   const deleteTicket = async (eventId, ticketclassId) => {
     setLoading(true);
     try {
+      // call the canister
       const _delete =  await deleteTicketClass(eventId, ticketclassId);
       if (_delete.Err) {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);

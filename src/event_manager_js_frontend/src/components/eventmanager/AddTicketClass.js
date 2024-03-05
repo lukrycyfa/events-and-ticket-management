@@ -1,18 +1,24 @@
+// imported dependencies
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 
+// The Add Ticket Class construct taking a save function and eventId as prop's
 const AddTicketClass = ({ save, eventId }) => {
 
+  // A Ticket Class attributes state variable's
   const [title, setTitle] = useState("");
   const [badgeUrl, setBadgeUrl] = useState("");
   const [cost, setCost] = useState(0);
   const [eventid, setSetEventId] = useState(eventId);
 
+  // form input vlidation
   const isFormFilled = () => title && badgeUrl && cost;
 
+  // Add Ticket Class modal state
   const [show, setShow] = useState(false);
-
+  
+  // Add Ticket Class modal state togglers
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 

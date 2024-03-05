@@ -1,3 +1,4 @@
+// imported dependencies
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Modal, Row } from "react-bootstrap";
@@ -6,20 +7,26 @@ import AddTicketClass from "./AddTicketClass";
 import UpdateTicketClass from "./UpdateTicketClass";
 import UpdateEvent from "./UpdateEvent";
 
+// The ManageEvent construct taking an event instance, addticket, updateticket, deleteticket, updateevent and deleteevent functions as --props
 const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateevent, deleteevent }) => {
  
+  // an event instance
   const { id, title, description, eventLocation, bannerUrl, manager, tickets, ticketClasses, eventStart, eventEnd, soldOut } = event;
 
+  // an event ticketclasses and purchased tickets state variable's
   const [_tickets, setTickets] = useState([]);
   const [ticketclasses, setTicketclasses] = useState([]);       
 
+  // timstamps converted to milliseconds
   const start = new Date(Number(eventStart)/1000000).toUTCString();
   const end = new Date(Number(eventEnd)/1000000).toUTCString();
 
 
+  // an event purchased tickets and ticketclasses modal state 
   const [show, setShow] = useState(false);
   const [_show, _setShow] = useState(false);
 
+  // an event purchased tickets and ticketclasses modal state togglers
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const _handleClose = () => _setShow(false);
