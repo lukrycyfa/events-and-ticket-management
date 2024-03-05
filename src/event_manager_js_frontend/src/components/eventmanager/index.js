@@ -42,8 +42,8 @@ const Events = () => {
     try {
       setLoading(true);
       const _tickets = await getAttendeeTickets();
+      console.log(_tickets, "tickets")
       if (_tickets.Err) return;
-      console.log(await getAttendeeTickets(), "tickets")
       setTickets(_tickets.Ok.tickets);
     } catch (error) {
       console.log({ error });
@@ -56,7 +56,7 @@ const Events = () => {
   const buyTicket = async (eid, tid) => {
     try {
       setLoading(true);
-      const _getticket = await getTicket({eid, tid});
+      const _getticket = await getTicket(eid, tid);
       if (_getticket.Err) {
         toast(<NotificationError text={`${_getticket.Err}`} />);
         return;
@@ -65,6 +65,7 @@ const Events = () => {
         getMyTickets();
         toast(<NotificationSuccess text="Purchased Ticket Successfully" />);
     } catch (error) {
+      console.log(error)
       toast(<NotificationError text="Failed to purchase ticket." />);
     } finally {
       setLoading(false);

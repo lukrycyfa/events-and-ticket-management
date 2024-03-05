@@ -303,7 +303,7 @@ export default Canister({
         const _event = eventOpt.Some;
         if (_event.eventEnd < ic.time()) return Err({ NotFound: `event with: id=${eventId} has ended` });
         const ticketclassOpt = ticketClassStorage.get(ticketclassId);
-        if ("None" in ticketclassOpt || _event.ticketClasses.findIndex((tid)=> tid.id === _ticketclass.id) < 0) {
+        if ("None" in ticketclassOpt || _event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId) < 0) {
             return Err({ NotFound: `ticketclass with: ticketclass=${ticketclassId} not found or not part of event` });
         }
         const _ticketclass = ticketclassOpt.Some; 
@@ -328,7 +328,7 @@ export default Canister({
         if (!paymentVerified) {
             return Err({ NotFound: `payment for event with, memo=${memo} could not be verified` });
         }
-        const pendingpaymentOpt = pendingPayments.remove(memo);
+        const pendingpaymentOpt = pendingPayments.get(memo);
         if ("None" in pendingpaymentOpt) {
             return Err({ NotFound: `could not complete transaction: there is no pending payment with id=${memo}` });
         }
@@ -355,18 +355,19 @@ export default Canister({
         eventStorage.insert(_event.id, _event);
         ticketStorage.insert(newTicket.id, newTicket);
         completedPayments.insert(ic.caller(), updatedPayment);
-        eventManagerStorage.insert(_event.manger, _mgm);      
+        eventManagerStorage.insert(_event.manger, _mgm);
+        pendingPayments.remove(memo);      
         const attendee = attendeeStorage.get(ic.caller()); 
         if ("None" in attendee) {
             const newAttendee = { id: uuidv4(), tickets: new Array(), createdAt: ic.time(), updatedAt: ic.time() };
             newAttendee.tickets.push(newTicket);
-            attendeeStorage.insert(newAttendee.id, newAttendee);
+            attendeeStorage.insert(ic.caller(), newAttendee);
             return Ok(newTicket);
         }
         const _attendee = attendee.Some;
         _attendee.tickets.push(newTicket);
         _attendee.updatedAt = ic.time()
-        attendeeStorage.insert(_attendee.id, _attendee);
+        attendeeStorage.insert(ic.caller(), _attendee);
         return Ok(newTicket);
     }),
 

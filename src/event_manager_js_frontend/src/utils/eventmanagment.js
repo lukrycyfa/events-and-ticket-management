@@ -66,11 +66,17 @@ export async function deleteTicketClass(eventId, ticketclassId) {
 export async function buyTicket(eventId, ticketclassId) {
   const eventmanagerCanister = window.canister.eventmanager;
   const paymentResponse = await eventmanagerCanister.makePayment(eventId, ticketclassId);
+  console.log(paymentResponse);
   const managerPrincipal = Principal.from(paymentResponse.Ok.eventManagerAddress);
-  const managerAddress = await marketplaceCanister.getAddressFromPrincipal(managerPrincipal);
+  console.log(managerPrincipal);
+  const managerAddress = await eventmanagerCanister.getAddressFromPrincipal(managerPrincipal);
+  console.log(managerAddress);
   const block = await transferICP(managerAddress, paymentResponse.Ok.cost, paymentResponse.Ok.memo);
-  await eventmanagerCanister.getTicket(managerPrincipal, paymentResponse.Ok.cost, block, paymentResponse.Ok.memo);
+  console.log(block);
+  const getTicket = await eventmanagerCanister.getTicket(managerPrincipal, paymentResponse.Ok.cost, block, paymentResponse.Ok.memo);
+  console.log(getTicket);
 }
+
 
 export async function deleteTicket(ticketId) {
   return window.canister.eventmanager.deleteTicket(ticketId);
