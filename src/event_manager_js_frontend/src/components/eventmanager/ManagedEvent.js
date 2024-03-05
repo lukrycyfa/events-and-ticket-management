@@ -49,7 +49,6 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
         <div className=" ratio ratio-4x3">
           <img src={bannerUrl} alt={title} style={{ objectFit: "cover" }} />
         </div>
-        {/* className="rounded-2 border-info shadow-lg" */}
         <Card.Body className="d-flex  flex-column text-center">
           <Card.Title>{title}</Card.Title>
           <Card.Text className="flex-grow-1 "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
@@ -63,8 +62,8 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
           <i className="bi bi-clock-fill"></i><span>{end}</span>
           </Card.Text>
         </Card.Body>
-        <Card.Footer>
-          <Stack direction="horizontal" gap={1}>
+        <Card.Footer >
+          <Stack direction="horizontal" gap={3}>
           <Button
             onClick={()=> deleteevent(id)}
             variant="danger"
@@ -80,8 +79,6 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
           >
             Ticket Classes
           </Button>
-          <AddTicketClass save={addticket} eventId={id} />
-          <UpdateEvent event={event} save={updateevent} />
           <Button
             onClick={_handleShow}
             variant="dark"
@@ -90,8 +87,15 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
             Purchased Tickets
           </Button>
           </Stack>
-          </Card.Footer>
-        <Card.Footer className="text-secondary">
+        </Card.Footer>
+        <Card.Footer >
+          <Stack direction="horizontal" gap={5}>
+          <AddTicketClass save={addticket} eventId={id} />
+          <UpdateEvent event={event} save={updateevent} />
+          </Stack>
+        </Card.Footer>
+        <Card.Footer className="text-secondary">  
+            -------
         </Card.Footer>
             <Modal show={show} onHide={handleClose} size="xl" centered  scrollable={true} backdrop={true} >
               <Modal.Header closeButton>
