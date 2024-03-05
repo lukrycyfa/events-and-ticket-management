@@ -94,7 +94,6 @@ const ManagedEvents = ({ getevents }) => {
       }
       console.log(_delete);
       getManagedEvents();
-      getevents()
       toast(<NotificationSuccess text="Event Delete successfully." />);
     } catch (error) {
       console.log({ error });

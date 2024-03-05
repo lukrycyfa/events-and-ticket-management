@@ -1,7 +1,21 @@
 import React from "react";
 import { Dropdown, Stack } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { NotificationSuccess, NotificationError } from "./utils/Notifications";
 
 const Wallet = ({ principal, balance, symbol, isAuthenticated, destroy }) => {
+
+  const copyAddress = async () => {
+    
+    try {
+      await navigator.clipboard.writeText(principal);
+      console.log('Address copied to clipboard');
+      toast(<NotificationSuccess text="Address copied to clipboard." />);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      toast(<NotificationError text={`Failed to copy: ,${err}`} />);
+    }
+  }
   if (isAuthenticated) {
     return (
       <>
@@ -16,11 +30,16 @@ const Wallet = ({ principal, balance, symbol, isAuthenticated, destroy }) => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu className="shadow-lg border-0  position-relative">
-            <Dropdown.Item>
-              <Stack direction="horizontal" gap={2}>
-                <i className="bi bi-person-circle fs-4" />
-                <span className="font-monospace">{principal}</span>
-              </Stack>
+            <Dropdown.Item
+              as="button"
+              className="d-flex align-items-center"
+              onClick={() => {
+                copyAddress();
+              }}
+            >
+                <i className="bi bi-person-circle fs-4" />  
+                <span className="font-monospace">{principal.toString().slice(0, 10)}</span>
+                <i className="bi bi-clipboard-data-fill fs-4">!</i>
             </Dropdown.Item>
 
             <Dropdown.Divider />
