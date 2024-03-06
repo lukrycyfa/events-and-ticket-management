@@ -1,5 +1,5 @@
-# Events and Ticket Managment
-- Events and ticket managment is a platform with a canister written in TypeScript, libraries from the Azle framework CDK (Canister Development Kit) and a boundled react.js front-end. Having implemented functionalities and modules that interact with coresponding front-end and canister utilities to manage events and tickets purchase. Idealy developed to run on the ICP (Internet Computer Protocol).   
+# Events and Ticket Management
+- Events and ticket managment is a platform with a canister written in TypeScript, libraries from the Azle framework CDK (Canister Development Kit) and a bundled react.js front-end. Having implemented functionalities and modules that interact with corresponding front-end and canister utilities to manage events and tickets purchase. Idealy developed to run on the ICP (Internet Computer Protocol).   
 
 
 ## Instructions on Deploying and Testing Canisters
@@ -9,7 +9,7 @@
 [![Test On GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lukrycyfa/events-and-ticket-managment?quickstart=1)
 
 
-- To deploy and test locally, you will be needing the following technologies:
+- To deploy and test locally, you will need the following technologies:
 - install [Docker](https://www.docker.com/get-started/) 
 - [VS Code](https://code.visualstudio.com/) 
 	
@@ -51,11 +51,11 @@ bash dfx deploy event_manager_js_frontend
 
 - Follow the link to the front-end provided from running the previous command, click on the connect button you will be redirected to the `internet identity` canister, create a new identity following the provided instructions.
 
-- After creating an identity you will be redirected to the event manager where you would see a button `managed events`, click on the button to open a the modal, below the modal is the `add event` component used to create events, create an event. On the newly craated event before the footer will be buttons to manage the event, create a new `ticket class` for the event and `publish` the event. Close the modal and logout with the logout button provided on the drop down from the balance icon.
+- After creating an identity you will be redirected to the event manager where you will see a button `managed events`, click on the button to open the modal, below the modal is the `add event` component used to create events, and create an event. On the newly created event before the footer will be buttons to manage the event, create a new `ticket class` for the event, and `publish` the event. Close the modal and log out with the logout button provided on the drop-down from the balance icon.
 
-- Now connect again but create a new identity to simulate an event attendee. After beign redirected to the event manager copy the currnet Principal from the drop down of the balance icon.
+- Now connect again but create a new identity to simulate an event attendee. After being redirected to the event manager copy the current Principal from the drop-down of the balance icon.
 
-- Now go back to the terminal and run the following command's to get an account-id and mint icp's to th attendees account.
+- Now go back to the terminal and run the following commands to get an account-id and mints ICP's to the attendee's account.
 
 ```bash
 dfx ledger account-id --of-principal <COPIED PRINCIPAL>
@@ -63,18 +63,18 @@ dfx ledger account-id --of-principal <COPIED PRINCIPAL>
 
 - The above command returns the account-id to the provided principle, copy that down it will be needed for the icp minting.
 
-- Mint ICP's to the returned Account-id
+- Mint ICPs to the returned Account-id
 
 ```bash
 dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ACCOUNT-ID>
 ```
 
-- Return to the app refresh the page to update the balance. There should be an available published event in the events list, on the event there will be a button `Purchase Event Tickets` to pop open a modal with available ticket, purchase one. After purcahse the ticket would be available in your `My Tickets` modal. 
+- Return to the app and refresh the page to update the balance. There should be an available published event in the events list, on the event there will be a button `Purchase Event Tickets` to pop open a modal with available tickets and purchase one. After purchase the ticket will be available in your `My Tickets` modal. 
 
 
 ### Test Canister via DFX
 
-- Create a new identity for a Manger
+- Create a new identity for a manager
 ```bash
 $ dfx identity new [OPTIONS] <IDENTITY>
 ```
@@ -128,7 +128,7 @@ dfx identity get-principal --identity <IDENTITY>
 dfx ledger account-id --of-principal <PRINCIPAL>
 ```
 
-- Now switch to the minters identity with the command below and mint icp's to the attendee
+- Now switch to the minter's identity with the command below and mint icp's to the attendee
 ```bash
 $ dfx identity use minter
 ```
@@ -140,7 +140,7 @@ dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ATTENDEE 
 ```bash
 $ dfx identity use <ATTENDEE IDENTITY>
 ```
-- First get the Managers account-id for icp transfer.
+- First, get the Manager account-id for ICP transfer.
 ```bash
 dfx ledger account-id --of-principal <MANAGERS PRINCIPAL>
 ```
@@ -153,17 +153,17 @@ $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getAllEvents '()'
 ```bash
 dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo nat64 <EVENT MANAGER ACCOUNT-ID>
 ```
-- the above command will return a block number, you will be needing that to get the purchased ticket
+- the above command will return a block number, you will need that to get the purchased ticket
 
 - Buy A ticket
 ```bash
 $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai makePayment '('eventId', 'ticketclassId')'
 ``` 
-- Returns a payment information you will be needing the memo in the information for the next call. the `PAYMENT_RESERVATION_PERIOD` is 3 mins enough to complete the transaction.
+- Returns payment information you will need the memo in the information for the next call. the `PAYMENT_RESERVATION_PERIOD` is 3 mins enough to complete the transaction.
 
-- Complete Payment And get Ticket with aquired information.
+- Complete Payment And get a Ticket with acquired information.
 
-- Get the managers Principal
+- Get the manager's Principal
 ```bash
 dfx identity get-principal --identity <MANAGERS IDENTITY>
 ```
@@ -176,12 +176,12 @@ $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getTicket '('Managers Principal'
 $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteEvent '("eventId")'
 ```
 
-- Delete an TicketClass, should be called by the TicketClass creator
+- Delete a TicketClass, which should be called by the TicketClass creator
 ```bash
 $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteTicketClass '("eventId", "ticketclassId")'
 ```
 
-- Delete an Ticket, should be called by the owner of the Ticket
+- Delete a Ticket, should be called by the owner of the Ticket
 ```bash
 $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteTicket '("ticketId")'
 ```
