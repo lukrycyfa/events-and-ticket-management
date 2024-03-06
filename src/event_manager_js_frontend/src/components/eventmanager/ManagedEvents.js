@@ -31,7 +31,6 @@ const ManagedEvents = ({ getevents }) => {
       setLoading(true);
       // call the canister
       const _mgmevents = await getEventsByManagement();
-      console.log(_mgmevents, "managed")
       if (_mgmevents.Err) return;
       setManagedEvents(_mgmevents.Ok.events);
     } catch (error) {
@@ -56,7 +55,6 @@ const ManagedEvents = ({ getevents }) => {
         toast(<NotificationError text={`${_create.Err.NotFound}`} />);
         return;
       }
-      console.log(_create)
       getManagedEvents();
       toast(<NotificationSuccess text="Event added successfully." />);
     } catch (error) {
@@ -82,7 +80,6 @@ const ManagedEvents = ({ getevents }) => {
         toast(<NotificationError text={`${_update.Err.NotFound}`} />);
         return;
       }
-      console.log(_update);
       getManagedEvents();
       toast(<NotificationSuccess text="Event Updated successfully." />);
     } catch (error) {
@@ -103,7 +100,6 @@ const ManagedEvents = ({ getevents }) => {
         toast(<NotificationError text={`${_publish.Err.NotFound}`} />);
         return;
       }
-      console.log(_publish);
       getManagedEvents();
       toast(<NotificationSuccess text="Event Published successfully." />);
     } catch (error) {
@@ -125,7 +121,6 @@ const ManagedEvents = ({ getevents }) => {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
       }
-      console.log(_delete);
       getManagedEvents();
       toast(<NotificationSuccess text="Event Delete successfully." />);
     } catch (error) {
@@ -144,12 +139,10 @@ const ManagedEvents = ({ getevents }) => {
       data.cost = parseInt(costStr, 10) * 10 ** 8;
       // call the canister
       const _add = await addTicketClass(data, eventId);
-      console.log(_add)
       if (_add.Err) {
         toast(<NotificationError text={`${_add.Err.NotFound}`} />);
         return;
       }
-      console.log(_add);
       getManagedEvents();
       toast(<NotificationSuccess text="TicketClass added successfully." />);
     } catch (error) {
@@ -172,7 +165,6 @@ const ManagedEvents = ({ getevents }) => {
         toast(<NotificationError text={`${_update.Err.NotFound}`} />);
         return;
       }
-      console.log(_update);
       getManagedEvents();
       toast(<NotificationSuccess text="TicketClass Updated successfully." />);
     } catch (error) {
@@ -193,7 +185,6 @@ const ManagedEvents = ({ getevents }) => {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
       }
-      console.log(_delete);
       getManagedEvents();
       toast(<NotificationSuccess text="TicketClass deleted successfully." />);
     } catch (error) {

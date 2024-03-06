@@ -32,7 +32,6 @@ const Events = () => {
   const getEvents = useCallback(async () => {
     try {
       setLoading(true);
-      console.log(await getEventList(), "events")
       setEvents(await getEventList());
     } catch (error) {
       console.log({ error });
@@ -46,7 +45,6 @@ const Events = () => {
     try {
       setLoading(true);
       const _tickets = await getAttendeeTickets();
-      console.log(_tickets, "tickets")
       if (_tickets.Err) return;
       setTickets(_tickets.Ok.tickets);
     } catch (error) {
@@ -131,7 +129,7 @@ const Events = () => {
             </Container>
           </Navbar>
 
-          <Card className="text-center rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733" }}>
+          <Card className="text-center rounded-2 border-info shadow-lg" style={{ backgroundColor: "#c42f02" }}>
             <Card.Header className="text-white display-5">Featured Events</Card.Header>
             <Card.Body>
               <Row xs={1} sm={1} lg={3} className="g-3 mb-5 g-xl-4 g-xxl-5">
