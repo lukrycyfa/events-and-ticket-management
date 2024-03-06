@@ -149,7 +149,7 @@ dfx ledger account-id --of-principal <MANAGERS PRINCIPAL>
 ```bash
 $ dfx canister call event-manager_js_backend getAllEvents '()'
 ```
-- Transfer Ticket cost to the Event Manager 
+- Transfer Ticket cost to the Event Manager
 ```bash
 dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo nat64 <EVENT MANAGER ACCOUNT-ID>
 ```
@@ -159,7 +159,7 @@ dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo 
 ```bash
 $ dfx canister call event-manager_js_backend makePayment '('eventId', 'ticketclassId')'
 ``` 
-- Returns a payment information you will be needing the memo in the information for the next call.
+- Returns a payment information you will be needing the memo in the information for the next call. the `PAYMENT_RESERVATION_PERIOD` is 3 mins enough to complete the transaction.
 
 - Complete Payment And get Ticket with aquired information.
 
