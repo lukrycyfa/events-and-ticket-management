@@ -7,11 +7,11 @@ import AddTicketClass from "./AddTicketClass";
 import UpdateTicketClass from "./UpdateTicketClass";
 import UpdateEvent from "./UpdateEvent";
 
-// The ManageEvent construct taking an event instance, addticket, updateticket, deleteticket, updateevent and deleteevent functions as --props
-const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateevent, deleteevent }) => {
+// The ManageEvent construct taking an event instance, addticket, updateticket, publishevent, deleteticket, updateevent and deleteevent functions as --props
+const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateevent, publishevent, deleteevent }) => {
 
   // an event instance
-  const { id, title, description, eventLocation, bannerUrl, manager, tickets, ticketClasses, eventStart, eventEnd, soldOut } = event;
+  const { id, title, description, eventLocation, bannerUrl, manager, tickets, ticketClasses, eventStart, eventEnd, soldOut, published } = event;
 
   // an event ticketclasses and purchased tickets state variable's
   const [_tickets, setTickets] = useState([]);
@@ -96,9 +96,16 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
           </Stack>
         </Card.Footer>
         <Card.Footer >
-          <Stack direction="horizontal" gap={5}>
+          <Stack direction="horizontal" gap={3}>
             <AddTicketClass save={addticket} eventId={id} />
-            <UpdateEvent event={event} save={updateevent} />
+            {!published && (<><UpdateEvent event={event} save={updateevent} />
+            <Button
+              onClick={()=> publishevent(id)}
+              variant="dark"
+              className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
+            >
+              Publish Event
+            </Button></>)}
           </Stack>
         </Card.Footer>
         <Card.Footer className="text-secondary">
@@ -212,6 +219,7 @@ ManagedEvent.propTypes = {
   updateticket: PropTypes.func.isRequired,
   deleteticket: PropTypes.func.isRequired,
   updateevent: PropTypes.func.isRequired,
+  publishevent: PropTypes.func.isRequired,
   deleteevent: PropTypes.func.isRequired
 };
 

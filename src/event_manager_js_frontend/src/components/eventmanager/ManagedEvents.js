@@ -8,7 +8,7 @@ import ManagedEvent from "./ManagedEvent";
 import Loader from "../utils/Loader";
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
 import {
-  createEvent, updateEvent, getEventsByManagement,
+  createEvent, updateEvent, publishEvent, getEventsByManagement,
   addTicketClass, updateTicketClass, deleteEvent, deleteTicketClass
 } from "../../utils/eventmanagment";
 
@@ -92,6 +92,28 @@ const ManagedEvents = ({ getevents }) => {
       setLoading(false);
     }
   };
+
+   // update an event
+   const publishMyEvent = async (eventId) => {
+    try {
+      setLoading(true);
+      // call the canister
+      const _publish = await publishEvent(data, eventId);
+      if (_publish.Err) {
+        toast(<NotificationError text={`${_publish.Err.NotFound}`} />);
+        return;
+      }
+      console.log(_publish);
+      getManagedEvents();
+      toast(<NotificationSuccess text="Event Published successfully." />);
+    } catch (error) {
+      console.log({ error });
+      toast(<NotificationError text="Failed to Publish Event." />);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // delete an event
   const deleteMyEvent = async (eventId) => {
@@ -223,6 +245,7 @@ const ManagedEvents = ({ getevents }) => {
                             updateticket={updateTicket}
                             deleteticket={deleteTicket}
                             updateevent={updateMyEvent}
+                            publishevent={publishMyEvent}
                             deleteevent={deleteMyEvent}
                           />
                         </Col>

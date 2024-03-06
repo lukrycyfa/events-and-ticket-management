@@ -20,13 +20,15 @@ const TicketClass = Record({
 // A Construct holding attributes of a Ticket of type Record
 const Ticket = Record({
     id: text,
-    title: text,
+    eventTitle: text,//
     description: text,
     eventLocation: text,
     ticketClassTitle: text,
     attendee: Principal,
     eventId: text,
     ticketClassId: text,
+    eventStart: nat64,//
+    eventEnd: nat64,//
     cost: nat64,
     paid: bool,
     createdAt: nat64,
@@ -46,6 +48,7 @@ const Event = Record({
     eventStart: nat64,
     eventEnd: nat64,
     soldOut: nat64,
+    published: bool,
     createdAt: nat64,
     updatedAt: nat64 
 });
@@ -132,11 +135,15 @@ export default Canister({
     // Query and retrive all events created on the canister
     getAllEvents: query([], Vec(Event), () => {
         var events = eventStorage.values();
+        var _events = new Array()
         // Ommit purchased tickets and return events
         for (let i = 0; i < events.length; i++){
-            events[i].tickets = [];
+            if (events[i].published){
+                events[i].tickets = [];
+                _events.push(events[i])
+            }
         }
-        return events;
+        return _events;
     }),
 
     // Query and retrive all events realated to an Event Manager on the canister
@@ -201,12 +208,41 @@ export default Canister({
             return Err({ NotFound: `event with: id=${eventId} not found or part of management events` });
         }
         const _event = event.Some;
+        if (_event.published) {
+            return Err({ NotFound: `event with: id=${eventId} Has been published`});
+        }
         const updateEvent = {..._event, ...payload, updatedAt: ic.time()};
         updateeventMgm.events[updateeventMgm.events.findIndex((eid)=> eid.id === eventId)] = updateEvent;
         eventStorage.insert(_event.id, updateEvent);
         eventManagerStorage.insert(ic.caller(), updateeventMgm);
 
         return Ok(updateEvent);
+    }),
+
+    // Publish an Event created on the Canister  
+    publishEvent: update([text], Result(Event, Message), (eventId: text) => {
+        // get Event Manager instance associated with the caller if any exist's, 
+        // make assertions on the `eventId` and event then update the published state of Event and 
+        // event on the Event Manager.
+        const eventMgm = eventManagerStorage.get(ic.caller());       
+        if ("None" in eventMgm) {
+            return Err({ NotFound: `event manager with: address=${ic.caller()} not found` });
+        }
+        const updateeventMgm = eventMgm.Some;
+        const event = eventStorage.get(eventId);       
+        if ("None" in event || updateeventMgm.events.findIndex((eid)=> eid.id === eventId) < 0) {
+            return Err({ NotFound: `event with: id=${eventId} not found or part of management events` });
+        }
+        const _event = event.Some;
+        if (!_event.published) {
+            return Err({ NotFound: `event with: id=${eventId} Has been published`});
+        }
+        _event.published = true;
+        updateeventMgm.events[updateeventMgm.events.findIndex((eid)=> eid.id === eventId)].published = true;
+        eventStorage.insert(_event.id, _event);
+        eventManagerStorage.insert(ic.caller(), updateeventMgm);
+
+        return Ok(_event);
     }),
 
     // Delete an Event created on the Canister
@@ -338,7 +374,7 @@ export default Canister({
             return Err({ NotFound: `cannot make payment for: event=${eventId} not found` });
         }
         const _event = eventOpt.Some;
-        if (_event.eventEnd < ic.time()) return Err({ NotFound: `event with: id=${eventId} has ended` });
+        if (_event.eventEnd < ic.time() && _event.published) return Err({ NotFound: `event with: id=${eventId} has ended or not published`});
         const ticketclassOpt = ticketClassStorage.get(ticketclassId);
         if ("None" in ticketclassOpt || _event.ticketClasses.findIndex((tid)=> tid.id === ticketclassId) < 0) {
             return Err({ NotFound: `ticketclass with: ticketclass=${ticketclassId} not found or not part of event` });
@@ -386,10 +422,10 @@ export default Canister({
         if ("None" in ticketclass || _event.ticketClasses.findIndex((eid)=> eid.id === payment.ticketClassId) < 0) {
             return Err({ NotFound: `ticketClass for Event with: id=${payment.ticketClassId} not found` });
         }
-        const _ticketclass = ticketclass.Some;
-        const newTicket = { id: uuidv4(), title: _event.title, description: _event.description, eventLocation: _event.eventLocation,
-                    ticketClassTitle: _ticketclass.title, attendee: ic.caller(), eventId: _event.id, ticketClassId: _ticketclass.id, 
-                    cost: _ticketclass.cost, paid: true, createdAt: ic.time(), updatedAt: ic.time()};
+        const _ticketclass = ticketclass.Some;  
+        const newTicket = { id: uuidv4(), eventTitle: _event.title, description: _event.description, eventLocation: _event.eventLocation,
+                    ticketClassTitle: _ticketclass.title, attendee: ic.caller(), eventId: _event.id, ticketClassId: _ticketclass.id, eventStart: _event.eventStart,
+                    eventEnd: _event.eventEnd, cost: _ticketclass.cost, paid: true, createdAt: ic.time(), updatedAt: ic.time()};
         _event.tickets.push(newTicket);
         _mgm.Some.events[_mgm.Some.events.findIndex((eve)=> eve.id = _event.id)].tickets.push(newTicket);
         _event.soldOut += 1n;

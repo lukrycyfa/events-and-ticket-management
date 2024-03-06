@@ -55,6 +55,12 @@ export async function updateEvent(event, eventId) {
     return window.canister.eventmanager.updateEvent(event, eventId);
 }
 
+// publish an event
+export async function publishEvent(eventId) {
+  // call the canister
+  return window.canister.eventmanager.publishEvent(eventId);
+}
+
 // delete an event
 export async function deleteEvent(eventId) {
     // call the canister

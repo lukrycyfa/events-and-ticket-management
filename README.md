@@ -50,7 +50,7 @@ bash dfx deploy event_manager_js_frontend
 
 - Follow the link to the front-end provided from running the previous command, click on the connect button you will be redirected to the `internet identity` canister, create a new identity following the provided instructions.
 
-- After creating an identity you will be redirected to the event manager where you would see a button `managed events`, click on the button to open a the modal, below the modal is the `add event` component used to create events, create an event. On the newly craated event before the footer will be buttons to manage the event, create a new `ticket class` for the event. Close the modal and logout with the logout button provided on the drop down from the balance icon.
+- After creating an identity you will be redirected to the event manager where you would see a button `managed events`, click on the button to open a the modal, below the modal is the `add event` component used to create events, create an event. On the newly craated event before the footer will be buttons to manage the event, create a new `ticket class` for the event and `publish` the event. Close the modal and logout with the logout button provided on the drop down from the balance icon.
 
 - Now connect again but create a new identity to simulate an event attendee. After beign redirected to the event manager copy the currnet Principal from the drop down of the balance icon.
 
@@ -68,7 +68,7 @@ dfx ledger account-id --of-principal <COPIED PRINCIPAL>
 dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ACCOUNT-ID>
 ```
 
-- Return to the app refresh the page to update the balance. There should be an available event in the events list, on the event there will be a button `Purchase Event Tickets` to pop open a modal with available ticket, purchase one. After purcahse the ticket would be available in your `My Tickets` modal. 
+- Return to the app refresh the page to update the balance. There should be an available published event in the events list, on the event there will be a button `Purchase Event Tickets` to pop open a modal with available ticket, purchase one. After purcahse the ticket would be available in your `My Tickets` modal. 
 
 
 ### Test Canister via DFX
@@ -89,7 +89,7 @@ $ dfx canister call event-manager_js_backend addEvent '( record { 'title'= "even
 
 - Update an event
 ```bash
-$ dfx canister call event-manager_js_backend updateEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; }, eventId )'
+$ dfx canister call event-manager_js_backend updateEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; }, 'eventId' )'
 ``` 
 
 - Get Managed Events
@@ -98,12 +98,16 @@ $ dfx canister call event-manager_js_backend getEventsByManagment '()'
 ``` 
 - Add a Ticket Class
 ```bash
-$ dfx canister call event-manager_js_backend addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, eventId )'
+$ dfx canister call event-manager_js_backend addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, 'eventId' )'
 ``` 
 
 - Update a Ticket Class
 ```bash
-$ dfx canister call event-manager_js_backend updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, eventId, ticketclassId)'
+$ dfx canister call event-manager_js_backend updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, 'eventId', ticketclassId)'
+```
+- Publish an Event
+```bash
+$ dfx canister call event-manager_js_backend publishEvent '('eventId')'
 ``` 
 
 - Create a new identity for an Attendee

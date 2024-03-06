@@ -7,7 +7,12 @@ import { Principal } from "@dfinity/principal";
 // The PurchasedTicket construct taking a ticket as instance and a deleteticket function as --props
 const PurchasedTicket = ({ ticket, deleteticket }) => {
   // instance of a purchased ticket
-  const { id, title, description, eventLocation, ticketClassTitle, attendee, eventId, ticketClassId, cost, paid, createdAt } = ticket;
+  
+  const { id, eventTitle, description, eventLocation, ticketClassTitle, attendee, eventId, ticketClassId, eventStart, eventEnd, cost } = ticket;
+
+    // timstamps converted to milliseconds
+    const start = new Date(Number(eventStart) / 1000000).toUTCString();
+    const end = new Date(Number(eventEnd) / 1000000).toUTCString();
 
   return (
     <Col key={id}>
@@ -21,20 +26,20 @@ const PurchasedTicket = ({ ticket, deleteticket }) => {
           </Stack>
         </Card.Header>
         <Card.Body className="d-flex  flex-column text-center">
-          <Card.Title className="font-monospace text-white">{title}</Card.Title>
+          <Card.Title className="font-monospace text-white">event: <span>{eventTitle}</span></Card.Title>
           <Card.Text className="font-monospace text-white">
-            eventId: <span>{eventId}</span>
-          </Card.Text>
-          <Card.Text className="font-monospace text-white">
-            ticketClassId: <span>{ticketClassId}</span>
-          </Card.Text>
-          <Card.Text className="font-monospace text-white">
-            <i className="bi bi-info-circle-fill"></i><span>{ticketClassTitle}</span>
+            Ticket: <i className="bi bi-info-circle-fill"></i><span>{ticketClassTitle}</span>
           </Card.Text>
           <Card.Text className="font-monospace text-white">
             <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
           </Card.Text>
           <Card.Text className="flex-grow-1 text-white"><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
+          <Card.Text className="font-monospace text-white">
+            eventStart: <span>{start}</span>
+          </Card.Text>
+          <Card.Text className="font-monospace text-white">
+            eventEnd: <span>{end}</span>
+          </Card.Text>
           <Card.Text className="text-secondary">
             <Button
               onClick={() => deleteticket(id)}
