@@ -40,10 +40,10 @@ const Event = ({ event, buyticket }) => {
 
   return (
     <Col key={id}>
-      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
+      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#021278"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          <span className="font-monospace text-dark">{Principal.from(manager).toText().slice(0, 17)}...</span>
+          <span className="font-monospace text-white">{Principal.from(manager).toText().slice(0, 17)}...</span>
             <Badge bg="secondary" className="ms-auto">
               {soldOut.toString()} SoldOut Tickets
             </Badge>
@@ -53,15 +53,15 @@ const Event = ({ event, buyticket }) => {
           <img src={bannerUrl} alt={title} style={{ objectFit: "cover" }} />
         </div>
         <Card.Body className="d-flex  flex-column text-center">
-          <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
-          <Card.Text className="flex-grow-2">
-          <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
+          <Card.Title className="text-white">{title}</Card.Title>
+          <Card.Text className="flex-grow-1 text-white "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
+          <Card.Text className="flex-grow-2 text-white">
+          <i className="bi bi-geo-alt-fill text-white"></i><span>{eventLocation}</span>
           </Card.Text>
-          <Card.Text className="flex-grow-2">
+          <Card.Text className="flex-grow-2 text-white">
           <i className="bi bi-clock-fill"></i><span>{start}</span>
           </Card.Text>
-          <Card.Text className="flex-grow-2">
+          <Card.Text className="flex-grow-2 text-white">
           <i className="bi bi-clock-fill"></i><span>{end}</span>
           </Card.Text>
           <Card.Text className="flex-grow-2">
@@ -76,7 +76,7 @@ const Event = ({ event, buyticket }) => {
               <Modal.Header closeButton >
                 <Modal.Title>Ticket Classes</Modal.Title>
               </Modal.Header>
-              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#802a03"}}>
+              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010836"}}>
               <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5">  
               {ticketclasses.map((tic, idx)=>(
                 <TicketClass

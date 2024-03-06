@@ -11,7 +11,7 @@ const TicketClass = ({ ticketclass, buyticket }) => {
 
   return (
     <Col key={id}>
-      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#d14504"}}>
+      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#021278"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
             <Badge bg="secondary" className="ms-auto">
@@ -23,11 +23,11 @@ const TicketClass = ({ ticketclass, buyticket }) => {
           <img src={badgeUrl} alt={title} style={{ objectFit: "cover" }} />
         </div>
         <Card.Body className="d-flex  flex-column text-center">
-          <Card.Title>{title}</Card.Title>
+          <Card.Title className="text-white">{title}</Card.Title>
           <Button
             variant="outline-dark"
             onClick={() => buyticket(id)}
-            className="rounded-2 border-info shadow-lg w-100"
+            className="rounded-2 border-info shadow-lg w-100 text-white"
           >
             Buy for {(Number(cost) / 10**8).toString()} ICP
           </Button>

@@ -199,7 +199,7 @@ const ManagedEvents = ({ getevents }) => {
           <Modal.Title>Your Managed Events </Modal.Title>
         </Stack>  
         </Modal.Header>
-          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#662d12"}}>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
           {!loading ? (
             <>
           <Container>  

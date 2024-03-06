@@ -36,7 +36,7 @@ const AddTicketClass = ({ save, eventId }) => {
           <Modal.Title>New Ticket</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#f75002"}}>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059"}}>
             <FloatingLabel
               controlId="inputTitle"
               label="ticket title"

@@ -43,10 +43,10 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
 
   return (
     <Col key={id}>
-      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
+      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#021278"}}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          <span className="font-monospace text-dark">{Principal.from(manager).toText().slice(0, 25)}...</span>
+          <span className="font-monospace text-white">{Principal.from(manager).toText().slice(0, 25)}...</span>
             <Badge bg="secondary" className="ms-auto">
               {soldOut.toString()} SoldOut Tickets
             </Badge>
@@ -57,15 +57,15 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
           <img src={bannerUrl} alt={title} style={{ objectFit: "cover" }} />
         </div>
         <Card.Body className="d-flex  flex-column text-center">
-          <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
-          <Card.Text className="flex-grow-2">
+          <Card.Title className="text-white">{title}</Card.Title>
+          <Card.Text className="flex-grow-1 text-white"><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
+          <Card.Text className="flex-grow-2 text-white">
           <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
           </Card.Text>
-          <Card.Text className="flex-grow-2">
+          <Card.Text className="flex-grow-2 text-white">
           <i className="bi bi-clock-fill"></i><span>{start}</span>
           </Card.Text>
-          <Card.Text className="flex-grow-2">
+          <Card.Text className="flex-grow-2 text-white">
           <i className="bi bi-clock-fill"></i><span>{end}</span>
           </Card.Text>
         </Card.Body>
@@ -108,13 +108,13 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
               <Modal.Header closeButton>
                 <Modal.Title>Ticket Classes</Modal.Title>
               </Modal.Header>
-              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#662d12"}}>
+              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
 
               <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5">  
               {ticketclasses.map((tic, idx)=>(
                 
                     <Col key={idx}>
-                      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
+                      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#021278"}}>
                         <Card.Header>
                           <Stack direction="horizontal" gap={2}>
                             <span className="font-monospace text-secondary"></span>
@@ -127,7 +127,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                           <img src={tic.badgeUrl} alt={tic.title} style={{ objectFit: "cover" }} />
                         </div>
                         <Card.Body className="d-flex  flex-column text-center">
-                          <Card.Title>{tic.title}</Card.Title>
+                          <Card.Title className="text-white">{tic.title}</Card.Title>
                         </Card.Body>
                         <Card.Footer>
                         <Stack direction="horizontal" gap={5}>
@@ -160,15 +160,14 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
               <Modal.Header closeButton>
                 <Modal.Title>Purchased Tickets</Modal.Title>
               </Modal.Header>
-              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#662d12"}}>
+              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010836"}}>
               <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5"> 
               {_tickets.map((tic, idx)=>(
                 
                     <Col key={idx}>
-                      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#d14504"}}>
+                      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#021278"}}>
                         <Card.Header>
                           <Stack direction="horizontal" gap={2}>
-                            <span className="font-monospace text-secondary"></span>
                             <Badge bg="secondary" className="ms-auto">
                               
                             Ticket Price {(Number(tic.cost) / 10**8).toString()} ICP
@@ -176,15 +175,15 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
                           </Stack>
                         </Card.Header>
                         <Card.Body className="d-flex  flex-column text-center">
-                          <Card.Title>{tic.title}</Card.Title>
-                          <Card.Text className="text-dark"><i className="bi bi-info-circle-fill"></i>{tic.ticketClassTitle}</Card.Text>
-                          <Card.Text className="text-dark"><i className="bi bi-info-circle-fill"></i>{tic.description}</Card.Text>
-                          <Card.Text className="text-dark"><i className="bi bi-geo-alt-fill"></i>{tic.eventLocation}</Card.Text>
-                          <Card.Text className="text-dark"><i className="bi bi-person-fill"></i>{Principal.from(tic.attendee).toText().slice(0, 15)}...</Card.Text>
-                          <Card.Text className="text-dark">
+                          <Card.Title className="text-white">{tic.title}</Card.Title>
+                          <Card.Text className="text-white"><i className="bi bi-info-circle-fill"></i>{tic.ticketClassTitle}</Card.Text>
+                          <Card.Text className="text-white"><i className="bi bi-info-circle-fill"></i>{tic.description}</Card.Text>
+                          <Card.Text className="text-white"><i className="bi bi-geo-alt-fill"></i>{tic.eventLocation}</Card.Text>
+                          <Card.Text className="text-white"><i className="bi bi-person-fill"></i>{Principal.from(tic.attendee).toText().slice(0, 15)}...</Card.Text>
+                          <Card.Text className="text-white">
                             eventId: <span>{tic.eventId}</span>
                             </Card.Text>
-                            <Card.Text className="text-dark">
+                            <Card.Text className="text-white">
                             ticketClassId: <span>{tic.ticketClassId}</span>
                             </Card.Text>
                         </Card.Body>

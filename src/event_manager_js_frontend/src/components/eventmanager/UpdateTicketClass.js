@@ -38,7 +38,7 @@ const UpdateTicketClass = ({ ticketclass, save, eventId }) => {
           <Modal.Title>Update Ticket</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#f75002"}}>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059"}}>
             <FloatingLabel
               controlId="inputName"
               label="ticket title"

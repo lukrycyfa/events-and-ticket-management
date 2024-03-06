@@ -102,7 +102,7 @@ const Events = () => {
       {!loading ? (
         <>
 
-      <Navbar collapseOnSelect sticky="top" expand="lg" className="bg-body-tertiary" style={{ backgroundColor: "#401501"}}>
+      <Navbar collapseOnSelect sticky="top" expand="lg" className="bg-body-tertiary" style={{ backgroundColor: "#01041c"}}>
       <Container>
         <Navbar.Brand className="text-white" >Get Ticket For Your Entertaiment</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -129,8 +129,8 @@ const Events = () => {
       </Container>
     </Navbar>
 
-        <Card className="text-center rounded-2 border-info shadow-lg" style={{ backgroundColor: "#802a03"}}>
-          <Card.Header>Featured Events</Card.Header>
+        <Card className="text-center rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
+          <Card.Header className="text-white display-5">Featured Events</Card.Header>
           <Card.Body>
             <Row xs={1} sm={1} lg={3} className="g-3 mb-5 g-xl-4 g-xxl-5">
               
@@ -154,7 +154,7 @@ const Events = () => {
         <Modal.Header closeButton>
           <Modal.Title>Purchased Tickets</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#802a03"}}>
+        <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
           <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll  mb-5 g-xl-4 g-xxl-5">
             {tickets.map((_ticket, idx) => (
               <PurchasedTicket
