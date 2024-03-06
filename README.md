@@ -1,5 +1,5 @@
 # Events and Ticket Management
-- Events and ticket management is a platform with a canister written in TypeScript, libraries from the Azle framework CDK (Canister Development Kit), and a bundled react.js front-end. Having implemented functionalities and modules that interact with corresponding front-end and canister utilities to manage events and ticket purchases. Idealy developed to run on the ICP (Internet Computer Protocol).   
+- Events and ticket management is a platform with a canister written in TypeScript, libraries from the Azle framework CDK (Canister Development Kit), and a bundled react.js front-end. Having implemented functionalities and modules that interact with corresponding front-end and canister utilities to manage events and ticket purchases. Ideally developed to run on the ICP (Internet Computer Protocol).  
 
 
 ## Instructions on Deploying and Testing Canisters
