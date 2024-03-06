@@ -13,7 +13,8 @@
 - install [Docker](https://www.docker.com/get-started/) 
 - [VS Code](https://code.visualstudio.com/) 
 	
-- On your Local Host and follow the link provided below:
+- On your Local Host and follow the link provided below
+
 [![Test locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/lukrycyfa/events-and-ticket-managment)
 
 **NOTE**: You will need to wait for the container to install all dependencies and start `dfx`,
