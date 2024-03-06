@@ -176,7 +176,7 @@ export default Canister({
             return Err({ NotFound: "Invalid Payload" })
         }
         const eventMgm = eventManagerStorage.get(ic.caller()); 
-        const newEvent = { id: uuidv4(), manager: ic.caller(), tickets: new Array(), ticketClasses: new Array(), soldOut: 0n, ...payload, createdAt: ic.time(), updatedAt: ic.time()};     
+        const newEvent = { id: uuidv4(), manager: ic.caller(), tickets: new Array(), ticketClasses: new Array(), soldOut: 0n, published: false, ...payload, createdAt: ic.time(), updatedAt: ic.time()};     
         eventStorage.insert(newEvent.id, newEvent); 
         if ("None" in eventMgm) {
             const _eventMgm = { id: uuidv4(), manager: ic.caller(), events: new Array(), createdAt: ic.time(), updatedAt: ic.time()};
@@ -234,8 +234,8 @@ export default Canister({
             return Err({ NotFound: `event with: id=${eventId} not found or part of management events` });
         }
         const _event = event.Some;
-        if (!_event.published) {
-            return Err({ NotFound: `event with: id=${eventId} Has been published`});
+        if (_event.published && _event.eventEnd < ic.time()) {
+            return Err({ NotFound: `event with: id=${eventId} Has been published or Ended`});
         }
         _event.published = true;
         updateeventMgm.events[updateeventMgm.events.findIndex((eid)=> eid.id === eventId)].published = true;
@@ -428,6 +428,7 @@ export default Canister({
                     eventEnd: _event.eventEnd, cost: _ticketclass.cost, paid: true, createdAt: ic.time(), updatedAt: ic.time()};
         _event.tickets.push(newTicket);
         _mgm.Some.events[_mgm.Some.events.findIndex((eve)=> eve.id = _event.id)].tickets.push(newTicket);
+        _mgm.Some.events[_mgm.Some.events.findIndex((eve)=> eve.id = _event.id)].soldOut += 1n;
         _event.soldOut += 1n;
         _event.updatedAt = ic.time();
         eventStorage.insert(_event.id, _event);

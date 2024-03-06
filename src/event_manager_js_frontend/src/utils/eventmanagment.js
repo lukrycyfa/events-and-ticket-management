@@ -91,6 +91,7 @@ export async function buyTicket(eventId, ticketclassId) {
   const eventmanagerCanister = window.canister.eventmanager;
   // create a pending payment
   const paymentResponse = await eventmanagerCanister.makePayment(eventId, ticketclassId);
+  if( paymentResponse.Err ) return paymentResponse;
   // get caller's principal
   const managerPrincipal = Principal.from(paymentResponse.Ok.eventManagerAddress);
   // get callers account-id

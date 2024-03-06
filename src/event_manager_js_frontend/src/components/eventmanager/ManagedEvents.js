@@ -98,7 +98,7 @@ const ManagedEvents = ({ getevents }) => {
     try {
       setLoading(true);
       // call the canister
-      const _publish = await publishEvent(data, eventId);
+      const _publish = await publishEvent(eventId);
       if (_publish.Err) {
         toast(<NotificationError text={`${_publish.Err.NotFound}`} />);
         return;

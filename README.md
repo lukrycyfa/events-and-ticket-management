@@ -45,7 +45,7 @@ bash dfx generate event_manager_js_backend
 bash dfx deploy event_manager_js_frontend
 ```
 
-**NOTE**: After deploying all canisters, run `./canister_urls.py` and follow the links provided.
+**NOTE**: After deploying all canisters, run `python3 canister_urls.py` and follow the links provided.
 
 ### Testing the Event Manager via the Front-end
 
