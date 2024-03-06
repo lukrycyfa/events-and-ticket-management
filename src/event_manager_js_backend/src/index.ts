@@ -124,7 +124,7 @@ const pendingPayments = StableBTreeMap(6, nat64, Payment);
 // Create an instance of the ledger canister
 const icpCanister = Ledger(Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
 
-const PAYMENT_RESERVATION_PERIOD = 120n; // reservation period in seconds
+const PAYMENT_RESERVATION_PERIOD = 180n; // reservation period in seconds
 
 // The Event Manager Construct.
 export default Canister({

@@ -11,39 +11,39 @@ const PurchasedTicket = ({ ticket, deleteticket }) => {
 
   return (
     <Col key={id}>
-      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#021278"}}>
+      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#021278" }}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          <span className="font-monospace text-white">{Principal.from(attendee).toText().slice(0, 12)}...</span>
+            <span className="font-monospace text-white">{Principal.from(attendee).toText().slice(0, 12)}...</span>
             <Badge bg="secondary" className="ms-auto">
-              Ticket Price {(Number(cost) / 10**8).toString()} ICP
+              Ticket Price {(Number(cost) / 10 ** 8).toString()} ICP
             </Badge>
           </Stack>
         </Card.Header>
         <Card.Body className="d-flex  flex-column text-center">
           <Card.Title className="font-monospace text-white">{title}</Card.Title>
           <Card.Text className="font-monospace text-white">
-          eventId: <span>{eventId}</span>
+            eventId: <span>{eventId}</span>
           </Card.Text>
           <Card.Text className="font-monospace text-white">
-          ticketClassId: <span>{ticketClassId}</span>
+            ticketClassId: <span>{ticketClassId}</span>
           </Card.Text>
           <Card.Text className="font-monospace text-white">
-          <i className="bi bi-info-circle-fill"></i><span>{ticketClassTitle}</span>
+            <i className="bi bi-info-circle-fill"></i><span>{ticketClassTitle}</span>
           </Card.Text>
           <Card.Text className="font-monospace text-white">
-          <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
+            <i className="bi bi-geo-alt-fill"></i><span>{eventLocation}</span>
           </Card.Text>
           <Card.Text className="flex-grow-1 text-white"><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
           <Card.Text className="text-secondary">
-          <Button
-            onClick={() => deleteticket(id)}
-            variant="danger"
-            className="rounded-pill px-0"
-            style={{ width: "38px" }}
-          >
-            <i className="bi bi-trash"></i>
-          </Button>
+            <Button
+              onClick={() => deleteticket(id)}
+              variant="danger"
+              className="rounded-pill px-0"
+              style={{ width: "38px" }}
+            >
+              <i className="bi bi-trash"></i>
+            </Button>
           </Card.Text>
         </Card.Body>
       </Card>

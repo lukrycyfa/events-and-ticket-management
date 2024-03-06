@@ -7,7 +7,7 @@ import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 const UpdateEvent = ({ event, save }) => {
 
   // an instance of an event
-  const {id,  title, description, eventLocation, bannerUrl, eventStart, eventEnd} = event;  
+  const { id, title, description, eventLocation, bannerUrl, eventStart, eventEnd } = event;
 
   // An event attributes state variable's
   const [_title, setTitle] = useState(title);
@@ -40,7 +40,7 @@ const UpdateEvent = ({ event, save }) => {
           <Modal.Title>Update Event</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059"}}>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059" }}>
             <FloatingLabel
               controlId="inputTitle"
               label="event title"

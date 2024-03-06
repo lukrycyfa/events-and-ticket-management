@@ -37,7 +37,7 @@ const AddEvent = ({ save }) => {
           <Modal.Title>New Event</Modal.Title>
         </Modal.Header>
         <Form>
-            <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059"}}>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059" }}>
             <FloatingLabel
               controlId="inputTitle"
               label="event title"

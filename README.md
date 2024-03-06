@@ -1,80 +1,182 @@
-## Things to be explained in the course:
-1. What is Ledger? More details here: https://internetcomputer.org/docs/current/developer-docs/integrations/ledger/
-2. What is Internet Identity? More details here: https://internetcomputer.org/internet-identity
-3. What is Principal, Identity, Address? https://internetcomputer.org/internet-identity | https://yumimarketplace.medium.com/whats-the-difference-between-principal-id-and-account-id-3c908afdc1f9
-4. Canister-to-canister communication and how multi-canister development is done? https://medium.com/icp-league/explore-backend-multi-canister-development-on-ic-680064b06320
+# Events and Ticket Managment
+- Events and ticket managment is a platform with a canister written in TypeScript, libraries from the Azle framework CDK (Canister Development Kit) and a boundled react.js front-end. Having implemented functionalities and modules that interact with coresponding front-end and canister utilities to manage events and tickets purchase. Idealy developed to run on the ICP (Internet Computer Protocol).   
 
-## Getting started
 
-To get started developing in the browser, click this button:
+## Instructions on Deploying and Testing Canisters
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/dacadeorg/icp-azle-201)
+- Deploy and test on GitHub Codespaces (recommended)
 
-If you rather want to use GitHub Codespaces, click this button instead:
+[![Test On GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/lukrycyfa/events-and-ticket-managment?quickstart=1)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dacadeorg/icp-azle-201?quickstart=1)
 
-**NOTE**: After deploying your canisters in GitHub Codespaces, run `./canister_urls.py` and click the links that are shown there.
+- To deploy and test locally, you will be needing the following technologies:
+- install [Docker](https://www.docker.com/get-started/) 
+- [VS Code](https://code.visualstudio.com/) 
+	
+- On your Local Host and follow the link provided below:
+[![Test locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/lukrycyfa/events-and-ticket-managment)
 
-If you prefer running VS Code locally and not in the browser, click "Codespaces: ..." or "Gitpod" in the bottom left corner and select "Open in VS Code" in the menu that appears. 
-If prompted, proceed by installing the recommended plugins for VS Code.
+**NOTE**: You will need to wait for the container to install all dependencies and start `dfx`,
 
-To develop fully locally, first install [Docker](https://www.docker.com/get-started/) and [VS Code](https://code.visualstudio.com/) and start them on your machine.
-Next, click the following button to open the dev container locally:
 
-[![Open locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/dacadeorg/icp-azle-201)
+### Deploying Canisters
 
-## How to deploy canisters implemented in the course
-
-### Ledger canister
-`./deploy-local-ledger.sh` - deploys a local Ledger canister. IC works differently when run locally so there is no default network token available and you have to deploy it yourself. Remember that it's not a token like ERC-20 in Ethereum, it's a native token for ICP, just deployed separately.
-This canister is described in the `dfx.json`:
+- Deploy the ledger canister, an icp test token canister for dev environments. 
+```bash
+bash deploy-local-ledger.sh
 ```
-	"ledger_canister": {
-  	"type": "custom",
-  	"candid": "https://raw.githubusercontent.com/dfinity/ic/928caf66c35627efe407006230beee60ad38f090/rs/rosetta-api/icp_ledger/ledger.did",
-  	"wasm": "https://download.dfinity.systems/ic/928caf66c35627efe407006230beee60ad38f090/canisters/ledger-canister.wasm.gz",
-  	"remote": {
-    	"id": {
-      	"ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-    	}
-  	}
-	}
+
+- Deploy the internet identity, a canister for authenticating and assigning identities to user's in a dev environment accessing the caniters front-end 
+```bash
+bash dfx deploy internet_identity
 ```
-`remote.id.ic` - that is the principal of the Ledger canister and it will be available by this principal when you work with the ledger.
 
-Also, in the scope of this script, a minter identity is created which can be used for minting tokens
-for the testing purposes.
-Additionally, the default identity is pre-populated with 1000_000_000_000 e8s which is equal to 10_000 * 10**8 ICP.
-The decimals value for ICP is 10**8.
+- Deploy the Event manager front and back ends, i.e the canister for creating and maintainig events and tickets.
+```bash
+bash dfx deploy event_manager_js_backend
+```
 
-List identities:
-`dfx identity list`
+```bash
+bash dfx generate event_manager_js_backend
+```
 
-Switch to the minter identity:
-`dfx identity use minter`
+```bash
+bash dfx deploy event_manager_js_frontend
+```
 
-Transfer ICP:
-`dfx ledger transfer <ADDRESS>  --memo 0 --icp 100 --fee 0`
-where:
- - `--memo` is some correlation id that can be set to identify some particular transactions (we use that in the marketplace canister).
- - `--icp` is the transfer amount
- - `--fee` is the transaction fee. In this case it's 0 because we make this transfer as the minter idenity thus this transaction is of type MINT, not TRANSFER.
- - `<ADDRESS>` is the address of the recipient. To get the address from the principal, you can use the helper function from the marketplace canister - `getAddressFromPrincipal(principal: Principal)`, it can be called via the Candid UI.
+**NOTE**: After deploying all canisters, run `./canister_urls.py` and follow the links provided.
+
+### Testing the Event Manager via the Front-end
+
+- Follow the link to the front-end provided from running the previous command, click on the connect button you will be redirected to the `internet identity` canister, create a new identity following the provided instructions.
+
+- After creating an identity you will be redirected to the event manager where you would see a button `managed events`, click on the button to open a the modal, below the modal is the `add event` component used to create events, create an event. On the newly craated event before the footer will be buttons to manage the event, create a new `ticket class` for the event. Close the modal and logout with the logout button provided on the drop down from the balance icon.
+
+- Now connect again but create a new identity to simulate an event attendee. After beign redirected to the event manager copy the currnet Principal from the drop down of the balance icon.
+
+- Now go back to the terminal and run the following command's to get an account-id and mint icp's to th attendees account.
+
+```bash
+dfx ledger account-id --of-principal <COPIED PRINCIPAL>
+```
+
+- The above command returns the account-id to the provided principle, copy that down it will be needed for the icp minting.
+
+- Mint ICP's to the returned Account-id
+
+```bash
+dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ACCOUNT-ID>
+```
+
+- Return to the app refresh the page to update the balance. There should be an available event in the events list, on the event there will be a button `Purchase Event Tickets` to pop open a modal with available ticket, purchase one. After purcahse the ticket would be available in your `My Tickets` modal. 
 
 
-### Internet identity canister
+### Test Canister via DFX
 
-`dfx deploy internet_identity` - that is the canister that handles the authentication flow. Once it's deployed, the `js-agent` library will be talking to it to register identities. There is UI that acts as a wallet where you can select existing identities
-or create a new one.
+- Create a new identity for a Manger
+```bash
+$ dfx identity new [OPTIONS] <IDENTITY>
+```
+- Select the identity
+```bash
+$ dfx identity use [OPTIONS] <IDENTITY>
+```
 
-### Marketplace canister
+- Add an event
+```bash
+$ dfx canister call event-manager_js_backend addEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; })'
+``` 
 
-`dfx deploy dfinity_js_backend` - deploys the marketplace canister where the business logic is implemented.
-Basically, it implements functions like add, view, update, delete, and buy products + a set of helper functions.
+- Update an event
+```bash
+$ dfx canister call event-manager_js_backend updateEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; }, eventId )'
+``` 
 
-Do not forget to run `dfx generate dfinity_js_backend` anytime you add/remove functions in the canister or when you change the signatures.
-Otherwise, these changes won't be reflected in IDL's and won't work when called using the JS agent.
+- Get Managed Events
+```bash
+$ dfx canister call event-manager_js_backend getEventsByManagment '()'
+``` 
+- Add a Ticket Class
+```bash
+$ dfx canister call event-manager_js_backend addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, eventId )'
+``` 
 
-### Marketplace frontend canister
-`dfx deploy dfinity_js_frontend` - deployes the frontend app for the `dfinity_js_backend` canister on IC.
+- Update a Ticket Class
+```bash
+$ dfx canister call event-manager_js_backend updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, eventId, ticketclassId)'
+``` 
+
+- Create a new identity for an Attendee
+```bash
+$ dfx identity new [OPTIONS] <IDENTITY>
+```
+- Select the identity
+```bash
+$ dfx identity use [OPTIONS] <IDENTITY>
+```
+- Get newly created identity Principal
+```bash
+dfx identity get-principal --identity <IDENTITY>
+```
+- Get Account-ID to Principal
+```bash
+dfx ledger account-id --of-principal <PRINCIPAL>
+```
+
+- Now switch to the minters identity with the command below and mint icp's to the attendee
+```bash
+$ dfx identity use minter
+```
+```bash
+dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ATTENDEE ACCOUNT-ID>
+```
+
+- Now switch to the attendee's identity with the command below to purchase a ticket
+```bash
+$ dfx identity use <ATTENDEE IDENTITY>
+```
+- First get the Managers account-id for icp transfer.
+```bash
+dfx ledger account-id --of-principal <MANAGERS PRINCIPAL>
+```
+
+- Get All Events
+```bash
+$ dfx canister call event-manager_js_backend getAllEvents '()'
+```
+- Transfer Ticket cost to the Event Manager 
+```bash
+dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo nat64 <EVENT MANAGER ACCOUNT-ID>
+```
+- the above command will return a block number, you will be needing that to get the purchased ticket
+
+- Buy A ticket
+```bash
+$ dfx canister call event-manager_js_backend makePayment '('eventId', 'ticketclassId')'
+``` 
+- Returns a payment information you will be needing the memo in the information for the next call.
+
+- Complete Payment And get Ticket with aquired information.
+
+- Get the managers Principal
+```bash
+dfx identity get-principal --identity <MANAGERS IDENTITY>
+```
+```bash
+$ dfx canister call event-manager_js_backend getTicket '('Managers Principal', 'Ticket Cost <cost: nat64>', 'Payment Block Number', 'memo')'
+```
+
+- Delete an Event, should be called by the Event creator
+```bash
+$ dfx canister call event-manager_js_backend deleteEvent '("eventId")'
+```
+
+- Delete an TicketClass, should be called by the TicketClass creator
+```bash
+$ dfx canister call event-manager_js_backend deleteTicketClass '("eventId", "ticketclassId")'
+```
+
+- Delete an Ticket, should be called by the owner of the Ticket
+```bash
+$ dfx canister call event-manager_js_backend deleteTicket '("ticketId")'
+```

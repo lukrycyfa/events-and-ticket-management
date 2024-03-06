@@ -7,15 +7,15 @@ import { Card, Button, Col, Badge, Stack } from "react-bootstrap";
 const TicketClass = ({ ticketclass, buyticket }) => {
   // a ticket class instance
   const { id, title, badgeUrl, cost } = ticketclass;
-      
+
 
   return (
     <Col key={id}>
-      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#021278"}}>
+      <Card className="rounded-2 border-info shadow-lg h-100" style={{ backgroundColor: "#021278" }}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
             <Badge bg="secondary" className="ms-auto">
-            Ticket Price {(Number(cost) / 10**8).toString()} ICP
+              Ticket Price {(Number(cost) / 10 ** 8).toString()} ICP
             </Badge>
           </Stack>
         </Card.Header>
@@ -29,7 +29,7 @@ const TicketClass = ({ ticketclass, buyticket }) => {
             onClick={() => buyticket(id)}
             className="rounded-2 border-info shadow-lg w-100 text-white"
           >
-            Buy for {(Number(cost) / 10**8).toString()} ICP
+            Buy for {(Number(cost) / 10 ** 8).toString()} ICP
           </Button>
         </Card.Body>
       </Card>
@@ -37,7 +37,7 @@ const TicketClass = ({ ticketclass, buyticket }) => {
   );
 };
 
-TicketClass.propTypes = {  
+TicketClass.propTypes = {
   ticketclass: PropTypes.instanceOf(Object).isRequired,
   buyticket: PropTypes.func.isRequired
 };

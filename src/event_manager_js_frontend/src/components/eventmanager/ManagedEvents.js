@@ -7,9 +7,10 @@ import AddEvent from "./AddEvent";
 import ManagedEvent from "./ManagedEvent";
 import Loader from "../utils/Loader";
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-import { createEvent, updateEvent, getEventsByManagement,
-   addTicketClass, updateTicketClass, deleteEvent, deleteTicketClass 
-  } from "../../utils/eventmanagment";
+import {
+  createEvent, updateEvent, getEventsByManagement,
+  addTicketClass, updateTicketClass, deleteEvent, deleteTicketClass
+} from "../../utils/eventmanagment";
 
 // The ManageEvent construct taking the getevents function as --prop
 const ManagedEvents = ({ getevents }) => {
@@ -47,10 +48,10 @@ const ManagedEvents = ({ getevents }) => {
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
       // timstamps converted to microseconds
-      data.eventStart = start.getTime()*1000000;
-      data.eventEnd = end.getTime()*1000000;
+      data.eventStart = start.getTime() * 1000000;
+      data.eventEnd = end.getTime() * 1000000;
       // call the canister
-      const _create =  await createEvent(data);
+      const _create = await createEvent(data);
       if (_create.Err) {
         toast(<NotificationError text={`${_create.Err.NotFound}`} />);
         return;
@@ -73,10 +74,10 @@ const ManagedEvents = ({ getevents }) => {
       const start = new Date(Date.parse(data.eventStart));
       const end = new Date(Date.parse(data.eventEnd));
       // timstamps converted to microseconds
-      data.eventStart = start.getTime()*1000000;
-      data.eventEnd = end.getTime()*1000000;
+      data.eventStart = start.getTime() * 1000000;
+      data.eventEnd = end.getTime() * 1000000;
       // call the canister
-      const _update =  await updateEvent(data, eventId);
+      const _update = await updateEvent(data, eventId);
       if (_update.Err) {
         toast(<NotificationError text={`${_update.Err.NotFound}`} />);
         return;
@@ -97,7 +98,7 @@ const ManagedEvents = ({ getevents }) => {
     setLoading(true);
     try {
       // call the canister
-      const _delete =  await deleteEvent(eventId);
+      const _delete = await deleteEvent(eventId);
       if (_delete.Err) {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
@@ -118,9 +119,9 @@ const ManagedEvents = ({ getevents }) => {
     try {
       setLoading(true);
       const costStr = data.cost;
-      data.cost = parseInt(costStr, 10) * 10**8;
+      data.cost = parseInt(costStr, 10) * 10 ** 8;
       // call the canister
-      const _add =  await addTicketClass(data, eventId);
+      const _add = await addTicketClass(data, eventId);
       console.log(_add)
       if (_add.Err) {
         toast(<NotificationError text={`${_add.Err.NotFound}`} />);
@@ -142,9 +143,9 @@ const ManagedEvents = ({ getevents }) => {
     try {
       setLoading(true);
       const costStr = data.cost;
-      data.cost = parseInt(costStr, 10) * 10**8;
+      data.cost = parseInt(costStr, 10) * 10 ** 8;
       // call the canister
-      const _update =  await updateTicketClass(data, eventId, ticketclassId);
+      const _update = await updateTicketClass(data, eventId, ticketclassId);
       if (_update.Err) {
         toast(<NotificationError text={`${_update.Err.NotFound}`} />);
         return;
@@ -165,7 +166,7 @@ const ManagedEvents = ({ getevents }) => {
     setLoading(true);
     try {
       // call the canister
-      const _delete =  await deleteTicketClass(eventId, ticketclassId);
+      const _delete = await deleteTicketClass(eventId, ticketclassId);
       if (_delete.Err) {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
@@ -187,62 +188,65 @@ const ManagedEvents = ({ getevents }) => {
       <Button
         onClick={() => {
           getManagedEvents()
-          handleShow()}}
+          handleShow()
+        }}
         variant="dark"
         className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
         Managed Events
       </Button>
-      <Modal show={show} onHide={handleClose} size="lg" centered  scrollable={true} backdrop={true} >
+      <Modal show={show} onHide={handleClose} size="lg" centered scrollable={true} backdrop={true} >
         <Modal.Header >
-        <Stack direction="horizontal" gap={3}>
-          <Modal.Title>Your Managed Events </Modal.Title>
-        </Stack>  
+          <Stack direction="horizontal" gap={3}>
+            <Modal.Title>Your Managed Events </Modal.Title>
+          </Stack>
         </Modal.Header>
-          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
+        <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733" }}>
           {!loading ? (
             <>
-          <Container>  
-              <Carousel slide  variant="dark" pause interval={null}
-              prevIcon={<Button variant="primary"><i className="bi bi-arrow-left me-2 fs-2" /></Button>}
-              nextIcon={<Button variant="primary"><i className="bi bi-arrow-right me-2 fs-2" /></Button>}
-              >
-                {_managedevents.map((_event, idx) => (
-                <Carousel.Item key={idx}>  
+              <Container>
+                <Carousel slide variant="dark" pause interval={null}
+                  prevIcon={<Button variant="primary"><i className="bi bi-arrow-left me-2 fs-2" /></Button>}
+                  nextIcon={<Button variant="primary"><i className="bi bi-arrow-right me-2 fs-2" /></Button>}
+                >
+                  {_managedevents.map((_event, idx) => (
+                    <Carousel.Item key={idx}>
                       <Row >
-            <Col xs={6} md={2} bg="info">
-            </Col>
-            <Col xs={12} md={8}>    
-                <ManagedEvent
-                    event={{
-                    ..._event,
-                    }}
-                    addticket={addTicket}
-                    updateticket={updateTicket}
-                    deleteticket={deleteTicket}
-                    updateevent={updateMyEvent}
-                    deleteevent={deleteMyEvent}
-                />
-            </Col>
-            <Col xs={6} md={2}>
-            </Col>
-          </Row>
-                </Carousel.Item>
-                ))}                    
-              </Carousel>
+                        <Col xs={6} md={2} bg="info">
+                        </Col>
+                        <Col xs={12} md={8}>
+                          <ManagedEvent
+                            event={{
+                              ..._event,
+                            }}
+                            addticket={addTicket}
+                            updateticket={updateTicket}
+                            deleteticket={deleteTicket}
+                            updateevent={updateMyEvent}
+                            deleteevent={deleteMyEvent}
+                          />
+                        </Col>
+                        <Col xs={6} md={2}>
+                        </Col>
+                      </Row>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
 
-          </Container>
-          </>
-        ) : (
+              </Container>
+            </>
+          ) : (
             <Loader />
-        )}
-          </Modal.Body>  
+          )}
+        </Modal.Body>
 
 
         <Modal.Footer>
-        <AddEvent save={addEvent} />
-          <Button variant="outline-secondary" onClick={() => {handleClose();
-          getevents();}
+          <AddEvent save={addEvent} />
+          <Button variant="outline-secondary" onClick={() => {
+            handleClose();
+            getevents();
+          }
           }>
             Close
           </Button>
@@ -253,7 +257,7 @@ const ManagedEvents = ({ getevents }) => {
 };
 
 ManagedEvents.propTypes = {
-  getevents: PropTypes.func.isRequired 
+  getevents: PropTypes.func.isRequired
 };
 
 export default ManagedEvents;

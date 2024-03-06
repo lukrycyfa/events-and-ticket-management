@@ -7,16 +7,16 @@ import TicketClass from "./TicketClass";
 
 // The Event construct taking an event instance and a buyticket function as --props
 const Event = ({ event, buyticket }) => {
- 
+
   // an event instance
   const { id, title, description, eventLocation, bannerUrl, manager, ticketClasses, eventStart, eventEnd, soldOut } = event;
-  
+
   // an event ticketclasses state variable
   const [ticketclasses, setTicketclasses] = useState([]);
-  
+
   // timstamps converted to milliseconds
-  const start = new Date(Number(eventStart)/1000000).toUTCString();
-  const end = new Date(Number(eventEnd)/1000000).toUTCString();
+  const start = new Date(Number(eventStart) / 1000000).toUTCString();
+  const end = new Date(Number(eventEnd) / 1000000).toUTCString();
 
   // purchase aticket
   const triggerBuy = (ticketclassId) => {
@@ -30,7 +30,7 @@ const Event = ({ event, buyticket }) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  useEffect(()=>{
+  useEffect(() => {
     try {
       setTicketclasses(ticketClasses)
     } catch (error) {
@@ -40,10 +40,10 @@ const Event = ({ event, buyticket }) => {
 
   return (
     <Col key={id}>
-      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#021278"}}>
+      <Card className="rounded-2 border-info shadow-lg  h-100" style={{ backgroundColor: "#021278" }}>
         <Card.Header>
           <Stack direction="horizontal" gap={2}>
-          <span className="font-monospace text-white">{Principal.from(manager).toText().slice(0, 17)}...</span>
+            <span className="font-monospace text-white">{Principal.from(manager).toText().slice(0, 17)}...</span>
             <Badge bg="secondary" className="ms-auto">
               {soldOut.toString()} SoldOut Tickets
             </Badge>
@@ -56,36 +56,36 @@ const Event = ({ event, buyticket }) => {
           <Card.Title className="text-white">{title}</Card.Title>
           <Card.Text className="flex-grow-1 text-white "><i className="bi bi-info-circle-fill"></i>{description}</Card.Text>
           <Card.Text className="flex-grow-2 text-white">
-          <i className="bi bi-geo-alt-fill text-white"></i><span>{eventLocation}</span>
+            <i className="bi bi-geo-alt-fill text-white"></i><span>{eventLocation}</span>
           </Card.Text>
           <Card.Text className="flex-grow-2 text-white">
-          <i className="bi bi-clock-fill"></i><span>{start}</span>
+            <i className="bi bi-clock-fill"></i><span>{start}</span>
           </Card.Text>
           <Card.Text className="flex-grow-2 text-white">
-          <i className="bi bi-clock-fill"></i><span>{end}</span>
+            <i className="bi bi-clock-fill"></i><span>{end}</span>
           </Card.Text>
           <Card.Text className="flex-grow-2">
-          <Button
-            onClick={handleShow}
-            variant="dark"
-            className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
-          >
-           Purchase Event Tickets
-          </Button>
-          <Modal show={show} onHide={handleClose} size="xl" centered  scrollable={true} backdrop={true} >
+            <Button
+              onClick={handleShow}
+              variant="dark"
+              className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
+            >
+              Purchase Event Tickets
+            </Button>
+            <Modal show={show} onHide={handleClose} size="xl" centered scrollable={true} backdrop={true} >
               <Modal.Header closeButton >
                 <Modal.Title>Ticket Classes</Modal.Title>
               </Modal.Header>
-              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010836"}}>
-              <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5">  
-              {ticketclasses.map((tic, idx)=>(
-                <TicketClass
-                  key={idx}
-                  ticketclass={tic}
-                  buyticket={triggerBuy}
-                />
-              ))}
-              </Row>
+              <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010836" }}>
+                <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll mb-5 g-xl-4 g-xxl-5">
+                  {ticketclasses.map((tic, idx) => (
+                    <TicketClass
+                      key={idx}
+                      ticketclass={tic}
+                      buyticket={triggerBuy}
+                    />
+                  ))}
+                </Row>
               </Modal.Body>
 
               <Modal.Footer>

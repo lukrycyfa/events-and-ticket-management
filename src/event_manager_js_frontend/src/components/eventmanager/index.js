@@ -4,10 +4,12 @@ import { toast } from "react-toastify";
 import Event from "./Event";
 import PurchasedTicket from "./PurchasedTicket";
 import Loader from "../utils/Loader";
-import { Row, Card, Stack,  Modal, Button, Nav, Navbar, Container } from "react-bootstrap";
+import { Row, Card, Stack, Modal, Button, Nav, Navbar, Container } from "react-bootstrap";
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-import { getEvents as getEventList, getAttendeeTickets, deleteTicket,
-  buyTicket as getTicket } from "../../utils/eventmanagment";
+import {
+  getEvents as getEventList, getAttendeeTickets, deleteTicket,
+  buyTicket as getTicket
+} from "../../utils/eventmanagment";
 import ManagedEvents from "./ManagedEvents";
 
 // The All Events Construct
@@ -63,9 +65,9 @@ const Events = () => {
         toast(<NotificationError text={`${_getticket.Err.NotFound}`} />);
         return;
       }
-        getEvents();
-        getMyTickets();
-        toast(<NotificationSuccess text="Purchased Ticket Successfully" />);
+      getEvents();
+      getMyTickets();
+      toast(<NotificationSuccess text="Purchased Ticket Successfully" />);
     } catch (error) {
       console.log(error)
       toast(<NotificationError text="Failed to purchase ticket." />);
@@ -78,7 +80,7 @@ const Events = () => {
   const deleteMyTicket = async (id) => {
     setLoading(true);
     try {
-      const _delete =  await deleteTicket(id);
+      const _delete = await deleteTicket(id);
       if (_delete.Err) {
         toast(<NotificationError text={`${_delete.Err.NotFound}`} />);
         return;
@@ -102,78 +104,78 @@ const Events = () => {
       {!loading ? (
         <>
 
-      <Navbar collapseOnSelect sticky="top" expand="lg" className="bg-body-tertiary" style={{ backgroundColor: "#01041c"}}>
-      <Container>
-        <Navbar.Brand className="text-white" >Get Ticket For Your Entertaiment</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
+          <Navbar collapseOnSelect sticky="top" expand="lg" className="bg-body-tertiary" style={{ backgroundColor: "#01041c" }}>
+            <Container>
+              <Navbar.Brand className="text-white" >Get Ticket For Your Entertaiment</Navbar.Brand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
 
-          <Nav className="me-auto">
-          <Stack direction="horizontal" gap={2}> 
-          <Nav.Item>
-          <ManagedEvents getevents={getEvents} />
-          </Nav.Item>
-          <Nav.Item>
-          <Button
-              onClick={handleShow}
-              variant="dark"
-              className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
+                <Nav className="me-auto">
+                  <Stack direction="horizontal" gap={2}>
+                    <Nav.Item>
+                      <ManagedEvents getevents={getEvents} />
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Button
+                        onClick={handleShow}
+                        variant="dark"
+                        className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
 
-              >
-                My Tickets
+                      >
+                        My Tickets
+                      </Button>
+                    </Nav.Item>
+                  </Stack>
+                </Nav>
+              </Navbar.Collapse>
+            </Container>
+          </Navbar>
+
+          <Card className="text-center rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733" }}>
+            <Card.Header className="text-white display-5">Featured Events</Card.Header>
+            <Card.Body>
+              <Row xs={1} sm={1} lg={3} className="g-3 mb-5 g-xl-4 g-xxl-5">
+
+                {events.map((_event, idx) => (
+                  <Event
+                    key={idx}
+                    event={{
+                      ..._event,
+                    }}
+                    buyticket={buyTicket}
+                  />
+                ))}
+              </Row>
+            </Card.Body>
+            <Card.Footer className="text-muted">..........</Card.Footer>
+          </Card>
+
+
+
+          <Modal show={show} onHide={handleClose} size="xl" centered scrollable={true} backdrop={true}>
+            <Modal.Header closeButton>
+              <Modal.Title>Purchased Tickets</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733" }}>
+              <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll  mb-5 g-xl-4 g-xxl-5">
+                {tickets.map((_ticket, idx) => (
+                  <PurchasedTicket
+                    key={idx}
+                    ticket={{
+                      ..._ticket,
+                    }}
+                    deleteticket={deleteMyTicket}
+                  />
+                ))}
+              </Row>
+            </Modal.Body>
+            <Modal.Footer>
+
+              <Button variant="outline-secondary" onClick={handleClose}>
+                Close
               </Button>
-          </Nav.Item>
-          </Stack> 
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-
-        <Card className="text-center rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
-          <Card.Header className="text-white display-5">Featured Events</Card.Header>
-          <Card.Body>
-            <Row xs={1} sm={1} lg={3} className="g-3 mb-5 g-xl-4 g-xxl-5">
-              
-            {events.map((_event, idx) => (
-              <Event
-                key={idx}
-                event={{
-                  ..._event,
-                }}
-                buyticket={buyTicket}
-              />
-            ))}
-          </Row>
-          </Card.Body>
-          <Card.Footer className="text-muted">..........</Card.Footer>
-        </Card>
-          
-
-
-      <Modal show={show} onHide={handleClose} size="xl" centered scrollable={true} backdrop={true}>
-        <Modal.Header closeButton>
-          <Modal.Title>Purchased Tickets</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#010733"}}>
-          <Row xs={1} sm={1} lg={3} className="g-3 flex flex-nowrap overflow-x-scroll  mb-5 g-xl-4 g-xxl-5">
-            {tickets.map((_ticket, idx) => (
-              <PurchasedTicket
-                key={idx}
-                ticket={{
-                  ..._ticket,
-                }}
-                deleteticket={deleteMyTicket}
-              />
-            ))}
-          </Row>
-        </Modal.Body>
-      <Modal.Footer>
-
-      <Button variant="outline-secondary" onClick={handleClose}>
-        Close
-      </Button>
-      </Modal.Footer>
-      </Modal>  
+            </Modal.Footer>
+          </Modal>
         </>
       ) : (
         <Loader />

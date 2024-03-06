@@ -17,7 +17,7 @@ const AddTicketClass = ({ save, eventId }) => {
 
   // Add Ticket Class modal state
   const [show, setShow] = useState(false);
-  
+
   // Add Ticket Class modal state togglers
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -29,14 +29,14 @@ const AddTicketClass = ({ save, eventId }) => {
         variant="dark"
         className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
-       Add Ticket
+        Add Ticket
       </Button>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>New Ticket</Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059"}}>
+          <Modal.Body className="rounded-2 border-info shadow-lg" style={{ backgroundColor: "#041059" }}>
             <FloatingLabel
               controlId="inputTitle"
               label="ticket title"
@@ -59,7 +59,7 @@ const AddTicketClass = ({ save, eventId }) => {
                 type="text"
                 placeholder="Badge Url"
                 onChange={(e) => {
-                    setBadgeUrl(e.target.value);
+                  setBadgeUrl(e.target.value);
                 }}
               />
             </FloatingLabel>
@@ -72,7 +72,7 @@ const AddTicketClass = ({ save, eventId }) => {
                 type="text"
                 placeholder="Price"
                 onChange={(e) => {
-                  if (Number(e.target.value) < 0) return;  
+                  if (Number(e.target.value) < 0) return;
                   setCost(e.target.value);
                 }}
               />
