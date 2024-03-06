@@ -6,7 +6,7 @@
 
 - Deploy and test on GitHub Codespaces (recommended)
 
-[![Test On GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/lukrycyfa/events-and-ticket-managment?quickstart=1)
+[![Test On GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lukrycyfa/events-and-ticket-managment?quickstart=1)
 
 
 - To deploy and test locally, you will be needing the following technologies:
