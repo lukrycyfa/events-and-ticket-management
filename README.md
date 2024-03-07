@@ -15,7 +15,7 @@
 	
 - On your Local Host and follow the link provided below
 
-[![Test locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/lukrycyfa/events-and-ticket-managment)
+[![Test locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/lukrycyfa/events-and-ticket-management)
 
 **NOTE**: You will need to wait for the container to install all dependencies and start `dfx`,
 
@@ -159,7 +159,7 @@ dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo 
 ```bash
 $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai makePayment '('eventId', 'ticketclassId')'
 ``` 
-- Returns payment information you will need the memo in the information for the next call. the `PAYMENT_RESERVATION_PERIOD` is 3 mins enough to complete the transaction.
+- Returns a payment object you will need the memo in the object for the next call. the `PAYMENT_RESERVATION_PERIOD` is 3 mins enough to complete the transaction.
 
 - Complete Payment And get a Ticket with acquired information.
 

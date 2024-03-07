@@ -96,7 +96,7 @@ const ManagedEvent = ({ event, addticket, updateticket, deleteticket, updateeven
           </Stack>
         </Card.Footer>
         <Card.Footer >
-          <Stack direction="horizontal" gap={3}>
+          <Stack direction="horizontal" gap={2}>
             <AddTicketClass save={addticket} eventId={id} />
             {!published && (<><UpdateEvent event={event} save={updateevent} />
             <Button
