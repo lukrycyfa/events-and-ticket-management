@@ -66,7 +66,7 @@ dfx ledger account-id --of-principal <COPIED PRINCIPAL>
 - Mint ICPs to the returned Account-id
 
 ```bash
-dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ACCOUNT-ID>
+dfx ledger --network local transfer --amount 100 --fee 0 --memo <nat64> <ACCOUNT-ID>
 ```
 
 - Return to the app and refresh the page to update the balance. There should be an available published event in the events list, on the event there will be a button `Purchase Event Tickets` to pop open a modal with available tickets and purchase one. After purchase the ticket will be available in your `My Tickets` modal. 
@@ -99,12 +99,12 @@ $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getEventsByManagment '()'
 ``` 
 - Add a Ticket Class
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, 'eventId' )'
+$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64 in  e8s"; 'badgeUrl' = "badge url"; }, 'eventId' )'
 ``` 
 
 - Update a Ticket Class
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64"; 'badgeUrl' = "badge url"; }, 'eventId', ticketclassId)'
+$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64 in  e8s"; 'badgeUrl' = "badge url"; }, 'eventId', ticketclassId)'
 ```
 - Publish an Event
 ```bash
@@ -133,7 +133,7 @@ dfx ledger account-id --of-principal <PRINCIPAL>
 $ dfx identity use minter
 ```
 ```bash
-dfx ledger --network local transfer --amount 100 --fee 0 --memo nat64 <ATTENDEE ACCOUNT-ID>
+dfx ledger --network local transfer --amount 100 --fee 0 --memo <nat64> <ATTENDEE ACCOUNT-ID>
 ```
 
 - Now switch to the attendee's identity with the command below to purchase a ticket
@@ -151,7 +151,7 @@ $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getAllEvents '()'
 ```
 - Transfer Ticket cost to the Event Manager
 ```bash
-dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo nat64 <EVENT MANAGER ACCOUNT-ID>
+dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo <nat64> <EVENT MANAGER ACCOUNT-ID>
 ```
 - the above command will return a block number, you will need that to get the purchased ticket
 
@@ -168,7 +168,7 @@ $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai makePayment '('eventId', 'ticket
 dfx identity get-principal --identity <MANAGERS IDENTITY>
 ```
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getTicket '('Managers Principal', 'Ticket Cost <cost: nat64>', 'Payment Block Number', 'memo')'
+$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getTicket '('Managers Principal', 'Ticket Cost <nat64>', 'Payment Block Number', 'memo')'
 ```
 
 - Delete an Event, should be called by the Event creator
