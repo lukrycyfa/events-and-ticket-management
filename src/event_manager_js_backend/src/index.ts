@@ -57,7 +57,7 @@ const Event = Record({
 const EventManager = Record({
     id: text,
     manager: Principal,
-    events: Vec(Event),
+    events : [Event],
     createdAt: nat64,
     updatedAt: nat64, 
 });
@@ -129,14 +129,15 @@ const icpCanister = Ledger(Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
 
 const PAYMENT_RESERVATION_PERIOD = 180n; // reservation period in seconds
 
+
 // The Event Manager Construct.
 export default Canister({
 
-    // Query and retrive all events created on the canister
+    // Query and retrieve all events created on the canister
     getAllEvents: query([], Vec(Event), () => {
         var events = eventStorage.values();
         var _events = new Array()
-        // Ommit purchased tickets and return events
+        // Omit purchased tickets and return events
         for (let i = 0; i < events.length; i++){
             if (events[i].published){
                 events[i].tickets = [];
@@ -146,9 +147,9 @@ export default Canister({
         return _events;
     }),
 
-    // Query and retrive all events realated to an Event Manager on the canister
-    getEventsByManagment: query([], Result(EventManager, Message), () => {
-        // query for an event manager and retrive, events associated
+    // Query and retrieve all events related to an Event Manager on the canister
+    getEventsByManagement: query([], Result(EventManager, Message), () => {
+        // Query for an event manager and retrieve events associated
         const eventmanagerOpt = eventManagerStorage.get(ic.caller());
         if ("None" in eventmanagerOpt) {
             return Err({ NotFound: `event manager with id=${ic.caller()} not found` });
@@ -157,9 +158,9 @@ export default Canister({
         return Ok(eventmanager);
     }),
 
-    // Query and retrive all Tickets realated to an Attendee on the canister
+    // Query and retrieve all Tickets related to an Attendee on the canister
     getAttendeeTickets: query([], Result(AttendeeTickets, Message), () => {
-        // query for an Attendee and retrive, Tickets associated
+        // Query for an Attendee and retrieve Tickets associated
         const attendeeOpt = attendeeStorage.get(ic.caller());
         if ("None" in attendeeOpt) {
             return Err({ NotFound: `attendee with id=${ic.caller()} not found` });
@@ -169,7 +170,7 @@ export default Canister({
 
     // Create and Add an Event to the Canister
     addEvent: update([EventPayload], Result(Event, Message), (payload: EventPayload) => {
-        // make assertions on the payload, Create a new Event Manager from the caller if non exist's, create a new Event, 
+        // Make assertions on the payload, Create a new Event Manager from the caller if none exists, create a new Event, 
         // associate it with the caller i.e the event manager and make updates.
         if (typeof payload !== "object" || Object.keys(payload).length === 0
         || payload.title.length <= 0 || payload.description.length <= 0 || payload.eventLocation.length <= 0 || payload.bannerUrl.length <= 0 || payload.eventStart < ic.time() || payload.eventEnd <= payload.eventStart)  {
@@ -192,7 +193,7 @@ export default Canister({
 
     // Update an Event created on the Canister  
     updateEvent: update([EventPayload, text], Result(Event, Message), (payload: EventPayload, eventId: text) => {
-        // make assertions on the payload, get Event Manager instance associated with the caller if any exist's, 
+        // Make assertions on the payload, get Event Manager instance associated with the caller if any exists, 
         // make assertions on the eventId and make updates to Event and Event Manager.
         if (typeof payload !== "object" || Object.keys(payload).length === 0 ||
         payload.title.length <= 0 || payload.description.length <= 0 || payload.eventLocation.length <= 0 || payload.bannerUrl.length <= 0 || payload.eventStart < ic.time() || payload.eventEnd <= payload.eventStart) {
@@ -221,7 +222,7 @@ export default Canister({
 
     // Publish an Event created on the Canister  
     publishEvent: update([text], Result(Event, Message), (eventId: text) => {
-        // get Event Manager instance associated with the caller if any exist's, 
+        // Get Event Manager instance associated with the caller if any exists, 
         // make assertions on the `eventId` and event then update the published state of Event and 
         // event on the Event Manager.
         const eventMgm = eventManagerStorage.get(ic.caller());       
