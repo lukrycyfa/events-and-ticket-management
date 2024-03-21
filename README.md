@@ -29,20 +29,20 @@ bash deploy-local-ledger.sh
 
 - Deploy the internet identity, a canister for authenticating and assigning identities to users in a dev environment accessing the canister front-end 
 ```bash
-bash dfx deploy internet_identity
+dfx deploy internet_identity
 ```
 
 - Deploy the Event manager front and back ends, i.e the canister for creating and maintainig events and tickets.
 ```bash
-bash dfx deploy event_manager_js_backend
+dfx deploy event_manager_js_backend
 ```
 
 ```bash
-bash dfx generate event_manager_js_backend
+dfx generate event_manager_js_backend
 ```
 
 ```bash
-bash dfx deploy event_manager_js_frontend
+dfx deploy event_manager_js_frontend
 ```
 
 **NOTE**: After deploying all canisters, run `python3 canister_urls.py` and follow the links provided.
@@ -76,48 +76,48 @@ dfx ledger --network local transfer --amount 100 --fee 0 --memo <nat64> <ACCOUNT
 
 - Create a new identity for a manager
 ```bash
-$ dfx identity new [OPTIONS] <IDENTITY>
+dfx identity new [OPTIONS] <IDENTITY>
 ```
 - Select the identity
 ```bash
-$ dfx identity use [OPTIONS] <IDENTITY>
+dfx identity use [OPTIONS] <IDENTITY>
 ```
 
 - Add an event
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai addEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; })'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai addEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; })'
 ``` 
 
 - Update an event
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai updateEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; }, 'eventId' )'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai updateEvent '( record { 'title'= "event title"; 'description' = "event description"; 'eventLocation' = "event location"; 'bannerUrl' = "banner url"; 'eventStart' = 'date-timestamp-microseconds'; 'eventEnd' = 'date-timestamp-microseconds'; }, 'eventId' )'
 ``` 
 
 - Get Managed Events
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getEventsByManagment '()'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai getEventsByManagment '()'
 ``` 
 - Add a Ticket Class
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64 in  e8s"; 'badgeUrl' = "badge url"; }, 'eventId' )'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai addTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64 in  e8s"; 'badgeUrl' = "badge url"; }, 'eventId' )'
 ``` 
 
 - Update a Ticket Class
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64 in  e8s"; 'badgeUrl' = "badge url"; }, 'eventId', ticketclassId)'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai updateTicketClass '( record { 'title'= "ticketclass title"; 'cost' = "nat64 in  e8s"; 'badgeUrl' = "badge url"; }, 'eventId', ticketclassId)'
 ```
 - Publish an Event
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai publishEvent '('eventId')'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai publishEvent '('eventId')'
 ``` 
 
 - Create a new identity for an Attendee
 ```bash
-$ dfx identity new [OPTIONS] <IDENTITY>
+dfx identity new [OPTIONS] <IDENTITY>
 ```
 - Select the identity
 ```bash
-$ dfx identity use [OPTIONS] <IDENTITY>
+dfx identity use [OPTIONS] <IDENTITY>
 ```
 - Get newly created identity Principal
 ```bash
@@ -130,7 +130,7 @@ dfx ledger account-id --of-principal <PRINCIPAL>
 
 - Now switch to the minter's identity with the command below and mint icp's to the attendee
 ```bash
-$ dfx identity use minter
+dfx identity use minter
 ```
 ```bash
 dfx ledger --network local transfer --amount 100 --fee 0 --memo <nat64> <ATTENDEE ACCOUNT-ID>
@@ -138,7 +138,7 @@ dfx ledger --network local transfer --amount 100 --fee 0 --memo <nat64> <ATTENDE
 
 - Now switch to the attendee's identity with the command below to purchase a ticket
 ```bash
-$ dfx identity use <ATTENDEE IDENTITY>
+dfx identity use <ATTENDEE IDENTITY>
 ```
 - First, get the Manager account-id for ICP transfer.
 ```bash
@@ -147,7 +147,7 @@ dfx ledger account-id --of-principal <MANAGERS PRINCIPAL>
 
 - Get All Events
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getAllEvents '()'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai getAllEvents '()'
 ```
 - Transfer Ticket cost to the Event Manager
 ```bash
@@ -157,7 +157,7 @@ dfx ledger --network local transfer --amount <cost/10**8: nat64> --fee 0 --memo 
 
 - Buy A ticket
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai makePayment '('eventId', 'ticketclassId')'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai makePayment '('eventId', 'ticketclassId')'
 ``` 
 - Returns a payment object you will need the memo in the object for the next call. the `PAYMENT_RESERVATION_PERIOD` is 3 mins enough to complete the transaction.
 
@@ -168,20 +168,20 @@ $ dfx canister call be2us-64aaa-aaaaa-qaabq-cai makePayment '('eventId', 'ticket
 dfx identity get-principal --identity <MANAGERS IDENTITY>
 ```
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai getTicket '('Managers Principal', 'Ticket Cost <nat64>', 'Payment Block Number', 'memo')'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai getTicket '('Managers Principal', 'Ticket Cost <nat64>', 'Payment Block Number', 'memo')'
 ```
 
 - Delete an Event, should be called by the Event creator
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteEvent '("eventId")'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteEvent '("eventId")'
 ```
 
 - Delete a TicketClass, which should be called by the TicketClass creator
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteTicketClass '("eventId", "ticketclassId")'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteTicketClass '("eventId", "ticketclassId")'
 ```
 
 - Delete a Ticket, should be called by the owner of the Ticket
 ```bash
-$ dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteTicket '("ticketId")'
+dfx canister call be2us-64aaa-aaaaa-qaabq-cai deleteTicket '("ticketId")'
 ```
